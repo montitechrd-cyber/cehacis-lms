@@ -7,5 +7,4 @@ server/storage/
 .impeccable/review/
 
 .claude/settings.local.json
-.wrangler/
 CREDENCIALES-PRODUCCION.txt
