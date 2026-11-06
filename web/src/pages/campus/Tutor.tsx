@@ -33,7 +33,7 @@ export default function Tutor() {
   useEffect(() => {
     if (ask.error) toast.error(aiErrorMessage(ask.error));
   }, [ask.error]);
-  useEffect(() => endRef.current?.scrollIntoView({ block: 'end' }), [history.data?.length]);
+  useEffect(() => { endRef.current?.scrollIntoView({ block: 'end' }); }, [history.data?.length]);
 
   return (
     <div className="animate-rise">

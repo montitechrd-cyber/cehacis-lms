@@ -1,6 +1,7 @@
 import { Router, type Request } from 'express';
 import { z } from 'zod';
 import { assertCourseStaff, can, requireAuth, requirePermission } from '../../middleware/auth.js';
+import { Prisma } from '@prisma/client';
 import { prisma } from '../../lib/prisma.js';
 import { audit } from '../../lib/audit.js';
 import { badRequest, conflict, forbidden, notFound } from '../../lib/errors.js';
@@ -97,7 +98,7 @@ r.patch('/scales/:id', manage, async (req, res) => {
   const d = parse(scaleSchema, merged);
   const s = await prisma.ratingScale.update({
     where: { id },
-    data: { name: d.name, min: d.min, max: d.max, labels: d.labels ?? (null as never) },
+    data: { name: d.name, min: d.min, max: d.max, labels: d.labels ?? Prisma.DbNull },
   });
   await audit(req, 'scale.update', 'RatingScale', id);
   res.json(scaleRow(s));

@@ -24,16 +24,25 @@ interface Requirements {
   passingScore: number;
   requireAllLessons: boolean;
   minAttendancePct: number;
-  finalAssessments: { id: number; title: string }[];
+  finalAssessments: { id: number; title: string; passingScore: number }[];
   enrollment: null | {
     status: string;
     progressPct: number;
     lessons: { completed: number; total: number; met: boolean };
-    assessments: { id: number; title: string; attempts: number; bestPercentage: number | null; met: boolean }[];
-    attendance: { attended: number; sessions: number; pct: number | null; met: boolean };
+    assessments: { id: number; title: string; passingScore: number; attempts: number; bestPercentage: number | null; met: boolean }[];
+    grade: { value: number | null; required: number; enforced: boolean; met: boolean };
+    attendance: { attended: number; sessions: number; pendingRecord: number; upcoming: number; pct: number | null; met: boolean };
     eligible: boolean;
     certificate: { id: number; code: string } | null;
   };
+}
+
+function attendanceNote(a: { pct: number | null; pendingRecord: number; upcoming: number }) {
+  const parts: string[] = [];
+  if (a.pct != null) parts.push(pct(a.pct));
+  if (a.upcoming) parts.push(`${a.upcoming} ${a.upcoming === 1 ? 'sesión pendiente' : 'sesiones pendientes'}`);
+  if (a.pendingRecord) parts.push(`${a.pendingRecord} sin registrar`);
+  return parts.length ? parts.join(' · ') : 'sin sesiones aún';
 }
 
 function Met({ ok, children }: { ok: boolean; children: React.ReactNode }) {
@@ -181,15 +190,21 @@ export default function CourseHome() {
                     const st = r.enrollment?.assessments.find((x) => x.id === f.id);
                     return (
                       <Met key={f.id} ok={!!st?.met}>
-                        Aprobar «{f.title}» con {r.passingScore} % o más
+                        Aprobar «{f.title}» con {f.passingScore} % o más
                         {st && <span className="text-muted tnum"> (mejor: {st.bestPercentage != null ? pct(st.bestPercentage) : '—'})</span>}
                       </Met>
                     );
                   })}
+                  {(!r.enrollment || r.enrollment.grade.enforced) && (
+                    <Met ok={!!r.enrollment?.grade.met}>
+                      Nota final del curso de {r.passingScore} % o más
+                      {r.enrollment && <span className="text-muted tnum"> (actual: {r.enrollment.grade.value != null ? pct(r.enrollment.grade.value) : '—'})</span>}
+                    </Met>
+                  )}
                   {r.minAttendancePct > 0 && (
                     <Met ok={!!r.enrollment?.attendance.met}>
                       Asistencia mínima de {r.minAttendancePct} %
-                      {r.enrollment && <span className="text-muted tnum"> ({r.enrollment.attendance.pct != null ? pct(r.enrollment.attendance.pct) : 'sin sesiones aún'})</span>}
+                      {r.enrollment && <span className="text-muted tnum"> ({attendanceNote(r.enrollment.attendance)})</span>}
                     </Met>
                   )}
                 </ul>

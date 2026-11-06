@@ -18,6 +18,7 @@ import {
   type DimensionKey, type Evaluation,
 } from './ai.service.js';
 import { recommend } from './ai.recommendations.js';
+import { buildOutline } from '../classroom/classroom.service.js';
 
 const r = Router();
 r.use(requireAuth);
@@ -359,6 +360,13 @@ r.post('/tutor', aiLimiter, async (req, res) => {
     if (courseId && courseId !== lesson.module.courseId) throw badRequest('La lección no pertenece al curso indicado');
     courseId = lesson.module.courseId;
     await assertCourseAccess(req, courseId);
+    // Un estudiante solo puede consultar lecciones publicadas y desbloqueadas (mismas reglas que el aula).
+    const staff = req.user!.permissions.has('courses.manage')
+      || !!(await prisma.courseInstructor.findUnique({ where: { courseId_instructorId: { courseId, instructorId: req.user!.id } } }));
+    if (!staff) {
+      const entry = (await buildOutline(req.user!.id, courseId)).byId.get(lesson.id);
+      if (!entry || entry.status === 'locked') throw forbidden('Esta lección aún no está disponible para ti');
+    }
     const text = htmlToText(lesson.content ?? '');
     context = `Curso: ${lesson.module.course.title}\nMódulo: ${lesson.module.title}\nLección: ${lesson.title}\n${lesson.summary ? `Resumen: ${lesson.summary}\n` : ''}\nContenido de la lección:\n${text}`.slice(0, MAX_CONTEXT);
   } else if (courseId) {

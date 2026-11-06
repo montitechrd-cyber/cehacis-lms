@@ -312,7 +312,7 @@ const brandSchema = z.object({
   logoUrl: urlOrPath.optional(),
   primaryColor: hex.optional(),
   inkColor: hex.optional(),
-  contactEmail: z.string().trim().email('Correo inválido').max(191).optional(),
+  contactEmail: z.union([z.string().trim().length(0), z.string().trim().email('Correo inválido').max(191)]).optional(),
   contactPhone: z.string().trim().max(40).optional(),
   whatsapp: z.string().trim().max(30).optional(),
   instagram: z.string().trim().max(100).optional(),

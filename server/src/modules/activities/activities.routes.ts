@@ -33,6 +33,7 @@ import {
   validateCriterionScores,
   weightedScore,
 } from './activities.service.js';
+import { reopenActivityLessons } from '../classroom/classroom.service.js';
 
 const r = Router();
 r.use(requireAuth);
@@ -271,6 +272,7 @@ r.post('/submissions/:sid/grade', manage, async (req, res) => {
     body: total != null ? `Nota: ${total} / ${act.maxScore}` : 'Revisa los comentarios de tu facilitador.',
     link: `/campus/practicas/${act.id}`,
   });
+  if (d.status === 'RETURNED') await reopenActivityLessons(students, act.id, act.courseId);
   for (const studentId of students) await refreshProgress(studentId, act.courseId);
   await audit(req, 'activity.grade', 'ActivitySubmission', sid, { status: d.status, score: total, students: students.length });
   res.json({ id: sid, status: d.status, score: total, students });

@@ -6,7 +6,7 @@ import { AppError, badRequest, notFound, conflict, forbidden } from '../../lib/e
 import { audit } from '../../lib/audit.js';
 import { notify } from '../../lib/notify.js';
 import { awardPoints, POINT_EVENTS, type PointEvent } from '../../lib/gamification.js';
-import { requireAuth, requirePermission } from '../../middleware/auth.js';
+import { assertCourseAccess, requireAuth, requirePermission } from '../../middleware/auth.js';
 import { BADGE_CRITERIA, CHALLENGE_CRITERIA, badgeMetric, challengeProgress } from './gamification.service.js';
 
 const r = Router();
@@ -185,7 +185,7 @@ r.post('/challenges/:id/claim', async (req, res) => {
   } catch {
     throw conflict('Ya reclamaste este reto');
   }
-  const awarded = await awardPoints(userId, 'CHALLENGE_COMPLETED', { type: 'challenge', id }, `Reto: ${ch.title}`);
+  const awarded = await awardPoints(userId, 'CHALLENGE_COMPLETED', { type: 'challenge', id }, `Reto: ${ch.title}`, ch.points);
   await notify(userId, { type: 'CHALLENGE', title: `Reto completado: ${ch.title}`, link: '/campus/logros' });
   res.json({ ok: true, pointsAwarded: awarded, progress });
 });
@@ -251,6 +251,7 @@ r.get('/me', async (req, res) => {
 r.get('/leaderboard', async (req, res) => {
   const q = query(req, z.object({ period: z.enum(['week', 'month', 'all']).default('all'), courseId: zId.optional() }));
   const me = req.user!.id;
+  if (q.courseId) await assertCourseAccess(req, q.courseId);
   const levels = await prisma.level.findMany({ orderBy: { number: 'desc' } });
   const levelFor = (pts: number) => {
     const l = levels.find((x) => x.minPoints <= pts);

@@ -19,7 +19,7 @@ export function csrf(req: Request, res: Response, next: NextFunction) {
   }
   if (SAFE.has(req.method)) return next();
   // Webhooks de pasarelas externas no llevan cookie: se autentican por firma en su propio handler.
-  if (req.path.startsWith('/api/payments/webhook')) return next();
+  if (req.path.startsWith('/api/commerce/webhook/')) return next();
   const header = req.get('x-csrf-token');
   if (!header || !req.cookies?.[CSRF_COOKIE] || header !== req.cookies[CSRF_COOKIE]) {
     return next(new AppError(403, 'Token de seguridad inválido. Recarga la página e inténtalo de nuevo.', 'CSRF'));
