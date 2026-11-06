@@ -762,15 +762,17 @@ async function main() {
   };
   console.log('\nResumen:');
   console.table(counts);
+  // Con SEED_PASSWORD (producción) la contraseña no se imprime en los logs.
+  const shownPassword = process.env.SEED_PASSWORD ? '(definida en SEED_PASSWORD)' : PASSWORD;
   console.log('\nCredenciales de prueba (contraseña común):');
   console.table([
-    { rol: 'Superadministrador', email: 'superadmin@cehacis.test', password: PASSWORD },
-    { rol: 'Administrador académico', email: 'academico@cehacis.test', password: PASSWORD },
-    { rol: 'Facilitador', email: 'facilitador@cehacis.test', password: PASSWORD },
-    { rol: 'Facilitador', email: 'facilitadora2@cehacis.test', password: PASSWORD },
-    { rol: 'Estudiante', email: 'estudiante@cehacis.test', password: PASSWORD },
-    { rol: 'Estudiante', email: 'estudiante2@cehacis.test', password: PASSWORD },
-    { rol: 'Estudiante', email: 'estudiante3@cehacis.test', password: PASSWORD },
+    { rol: 'Superadministrador', email: 'superadmin@cehacis.test', password: shownPassword },
+    { rol: 'Administrador académico', email: 'academico@cehacis.test', password: shownPassword },
+    { rol: 'Facilitador', email: 'facilitador@cehacis.test', password: shownPassword },
+    { rol: 'Facilitador', email: 'facilitadora2@cehacis.test', password: shownPassword },
+    { rol: 'Estudiante', email: 'estudiante@cehacis.test', password: shownPassword },
+    { rol: 'Estudiante', email: 'estudiante2@cehacis.test', password: shownPassword },
+    { rol: 'Estudiante', email: 'estudiante3@cehacis.test', password: shownPassword },
   ]);
 }
 
