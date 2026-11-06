@@ -1,0 +1,46 @@
+{
+  "title": "Composición de la nueva home",
+  "question": "Tres estructuras para la home con el templo monumental como protagonista. Mismo sistema (naranja, tinta, Schibsted, templo); cambia la composición.",
+  "options": [
+    {
+      "id": "fachada",
+      "label": "Fachada iluminada",
+      "kicker": "THE ROLL",
+      "lineage": "Fachada de un aula magna iluminada de noche para la lección inaugural",
+      "thesis": "La home es la fachada del templo encendida: el templo naranja monumental domina un campo de tinta y de su frontón sale la voz.",
+      "palette": ["#1b2236", "#ee7a2f", "#ffffff", "#f2f2f0"],
+      "materials": ["campo de tinta a sangre", "templo naranja monumental", "ondas de voz vivas"],
+      "viewport": "Campo tinta a sangre; templo naranja de ~560px centrado, ondas de voz pulsando desde el frontón; el lema grande en papel se apoya sobre el basamento; cursos inscritos en el friso como cartelera; botón naranja Ver cursos bajo los escalones.",
+      "risk": "Si el templo crece demasiado, el lema y la acción quedan por debajo del pliegue.",
+      "html": ".impeccable/mocks/decision/fachada.html",
+      "comp": ".impeccable/mocks/decision/fachada.webp"
+    },
+    {
+      "id": "portico",
+      "label": "Pórtico de cursos",
+      "lineage": "Pórtico de un templo clásico con inscripciones en cada columna",
+      "thesis": "Cada columna del templo es un curso: el visitante entra a la oferta pasando entre los fustes.",
+      "palette": ["#ffffff", "#ee7a2f", "#1b2236", "#f2f2f0"],
+      "materials": ["frontón a ancho completo", "fustes naranjas con texto vertical", "basamento escalonado"],
+      "viewport": "Frontón tinta a todo el ancho con mariposa y lema; debajo, cuatro columnas naranjas altas, cada una con N.º, título del curso, nivel y precio; basamento de tres escalones con el CTA.",
+      "risk": "Con más de cuatro cursos las columnas necesitan otra regla de reparto.",
+      "html": ".impeccable/mocks/decision/portico.html",
+      "comp": ".impeccable/mocks/decision/portico.webp"
+    },
+    {
+      "id": "alzado",
+      "label": "Alzado acotado",
+      "lineage": "Lámina de alzado arquitectónico con cotas y leyendas",
+      "thesis": "El templo dibujado como lámina técnica: cada parte del logo está acotada y explica qué entrena CEHACIS.",
+      "palette": ["#ffffff", "#1b2236", "#ee7a2f", "#e8e8e4"],
+      "materials": ["retícula de lámina", "templo sólido monumental", "líneas de cota con leyendas"],
+      "viewport": "Templo naranja grande a la derecha-centro sobre retícula fina; líneas de cota salen de frontón (voz), columnas (cursos), basamento (método) hacia leyendas; lema grande a la izquierda con CTA.",
+      "risk": "Puede leerse técnico-frío si las leyendas no son claras y cálidas.",
+      "html": ".impeccable/mocks/decision/alzado.html",
+      "comp": ".impeccable/mocks/decision/alzado.webp"
+    }
+  ],
+  "reroll": true,
+  "steer": true,
+  "buildPath": { "value": "code" }
+}

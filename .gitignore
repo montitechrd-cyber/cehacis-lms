@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.env
+server/.env
+server/storage/
+*.log
+.impeccable/review/
+
+.claude/settings.local.json
+.wrangler/

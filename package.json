@@ -1,0 +1,26 @@
+{
+  "name": "cehacis-lms",
+  "private": true,
+  "version": "1.0.0",
+  "description": "CEHACIS LMS — portal público, campus virtual y panel administrativo",
+  "workspaces": [
+    "server",
+    "web"
+  ],
+  "scripts": {
+    "dev:server": "npm run dev --workspace server",
+    "dev:web": "npm run dev --workspace web",
+    "build": "npm run build --workspace server && npm run build --workspace web",
+    "db:migrate": "npm run db:migrate --workspace server",
+    "db:seed": "npm run db:seed --workspace server",
+    "test": "npm run test --workspace server"
+  },
+  "allowScripts": {
+    "@prisma/client@6.16.2": true,
+    "@prisma/engines@6.16.2": true,
+    "esbuild@0.25.12": true,
+    "esbuild@0.28.2": true,
+    "prisma@6.16.2": true,
+    "@tailwindcss/oxide@4.1.13": true
+  }
+}

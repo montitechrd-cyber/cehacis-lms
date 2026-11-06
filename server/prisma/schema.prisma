@@ -1,0 +1,1826 @@
+// CEHACIS LMS — modelo de datos relacional (MySQL 8)
+// Convenciones: ids Int autoincrementales, tablas en snake_case plural (@@map),
+// dinero en Decimal(10,2), borrado lógico con deletedAt donde aplica.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "mysql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+// ───────────────────────── Identidad, roles y seguridad ─────────────────────────
+
+enum UserStatus {
+  ACTIVE
+  PENDING
+  SUSPENDED
+}
+
+model Role {
+  id          Int              @id @default(autoincrement())
+  key         String           @unique @db.VarChar(50)
+  name        String           @db.VarChar(100)
+  description String?          @db.VarChar(255)
+  isSystem    Boolean          @default(true)
+  permissions RolePermission[]
+  users       User[]
+  createdAt   DateTime         @default(now())
+
+  @@map("roles")
+}
+
+model Permission {
+  id          Int              @id @default(autoincrement())
+  key         String           @unique @db.VarChar(80)
+  module      String           @db.VarChar(50)
+  description String?          @db.VarChar(255)
+  roles       RolePermission[]
+
+  @@map("permissions")
+}
+
+model RolePermission {
+  roleId       Int
+  permissionId Int
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+model User {
+  id              Int        @id @default(autoincrement())
+  email           String     @unique @db.VarChar(191)
+  passwordHash    String     @db.VarChar(255)
+  firstName       String     @db.VarChar(100)
+  lastName        String     @db.VarChar(100)
+  phone           String?    @db.VarChar(30)
+  avatarUrl       String?    @db.VarChar(500)
+  status          UserStatus @default(ACTIVE)
+  roleId          Int
+  role            Role       @relation(fields: [roleId], references: [id])
+  emailVerifiedAt DateTime?
+  lastLoginAt     DateTime?
+  failedLogins    Int        @default(0)
+  lockedUntil     DateTime?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  deletedAt       DateTime?
+
+  student    StudentProfile?
+  instructor InstructorProfile?
+  sessions   Session[]
+  resets     PasswordReset[]
+
+  enrollments           Enrollment[]
+  lessonProgress        LessonProgress[]
+  resourceProgress      ResourceProgress[]
+  attempts              AssessmentAttempt[]  @relation("AttemptStudent")
+  gradedAttempts        AssessmentAttempt[]  @relation("AttemptGrader")
+  competencies          StudentCompetency[]  @relation("CompetencyStudent")
+  competencyEvaluations StudentCompetency[]  @relation("CompetencyEvaluator")
+  submissions           ActivitySubmission[] @relation("SubmissionStudent")
+  gradedSubmissions     ActivitySubmission[] @relation("SubmissionGrader")
+  peerReviews           PeerReview[]
+  activityGroups        ActivityGroupMember[]
+  feedbackGiven         Feedback[]           @relation("FeedbackAuthor")
+  feedbackReceived      Feedback[]           @relation("FeedbackStudent")
+  attendance            Attendance[]         @relation("AttendanceStudent")
+  attendanceRecorded    Attendance[]         @relation("AttendanceRecorder")
+  certificates          Certificate[]
+  achievements          Achievement[]
+  pointTransactions     PointTransaction[]
+  challengeCompletions  ChallengeCompletion[]
+  recognitionsGiven     Recognition[]        @relation("RecognitionFrom")
+  recognitionsReceived  Recognition[]        @relation("RecognitionTo")
+  forumThreads          ForumThread[]
+  forumPosts            ForumPost[]
+  lessonComments        LessonComment[]
+  conversations         ConversationParticipant[]
+  messages              Message[]
+  announcements         Announcement[]
+  notifications         Notification[]
+  eventsCreated         Event[]              @relation("EventCreator")
+  eventsInstructed      Event[]              @relation("EventInstructor")
+  eventParticipations   EventParticipant[]
+  orders                Order[]
+  invoices              Invoice[]
+  subscriptions         Subscription[]
+  couponRedemptions     CouponRedemption[]
+  aiSimulations         AiSimulation[]       @relation("SimulationStudent")
+  aiReviews             AiSimulation[]       @relation("SimulationReviewer")
+  aiInteractions        AiInteraction[]
+  auditLogs             AuditLog[]
+  files                 File[]
+  coursesCreated        Course[]             @relation("CourseCreator")
+  courseInstructors     CourseInstructor[]
+  groupsLed             CourseGroup[]
+  rubrics               Rubric[]
+  courseReviews         CourseReview[]
+  instructorEvalsGiven  InstructorEvaluation[] @relation("EvalEvaluator")
+  instructorEvals       InstructorEvaluation[] @relation("EvalInstructor")
+  notesAbout            AcademicNote[]       @relation("NoteStudent")
+  notesWritten          AcademicNote[]       @relation("NoteAuthor")
+  availability          InstructorAvailability[]
+  reports               ContentReport[]      @relation("ReportReporter")
+  reportsResolved       ContentReport[]      @relation("ReportResolver")
+
+  @@index([roleId])
+  @@index([status])
+  @@map("users")
+}
+
+model Session {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique @db.VarChar(128)
+  userAgent String?   @db.VarChar(255)
+  ip        String?   @db.VarChar(64)
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+model PasswordReset {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique @db.VarChar(128)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@map("password_resets")
+}
+
+model StudentProfile {
+  userId     Int       @id
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  documentId String?   @db.VarChar(30)
+  birthDate  DateTime? @db.Date
+  occupation String?   @db.VarChar(120)
+  city       String?   @db.VarChar(100)
+  country    String?   @db.VarChar(100)
+  bio        String?   @db.Text
+  points     Int       @default(0)
+  levelId    Int?
+  level      Level?    @relation(fields: [levelId], references: [id])
+
+  @@map("students")
+}
+
+model InstructorProfile {
+  userId          Int     @id
+  user            User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  headline        String? @db.VarChar(160)
+  bio             String? @db.Text
+  specialties     Json?
+  yearsExperience Int?
+  linkedinUrl     String? @db.VarChar(300)
+  isPublic        Boolean @default(true)
+
+  @@map("instructors")
+}
+
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  userId    Int?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action    String   @db.VarChar(80)
+  entity    String   @db.VarChar(60)
+  entityId  String?  @db.VarChar(60)
+  meta      Json?
+  ip        String?  @db.VarChar(64)
+  userAgent String?  @db.VarChar(255)
+  createdAt DateTime @default(now())
+
+  @@index([entity, entityId])
+  @@index([userId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+model Setting {
+  key       String   @id @db.VarChar(80)
+  value     Json
+  updatedAt DateTime @updatedAt
+
+  @@map("settings")
+}
+
+// ───────────────────────── Catálogo académico ─────────────────────────
+
+enum CourseLevel {
+  BASIC
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum Modality {
+  VIRTUAL
+  PRESENCIAL
+  HIBRIDA
+}
+
+enum CourseStatus {
+  DRAFT
+  IN_DEVELOPMENT
+  PUBLISHED
+  ARCHIVED
+}
+
+model Category {
+  id          Int      @id @default(autoincrement())
+  name        String   @db.VarChar(100)
+  slug        String   @unique @db.VarChar(120)
+  description String?  @db.VarChar(500)
+  courses     Course[]
+
+  @@map("categories")
+}
+
+model Program {
+  id          Int             @id @default(autoincrement())
+  title       String          @db.VarChar(200)
+  slug        String          @unique @db.VarChar(220)
+  summary     String?         @db.VarChar(500)
+  description String?         @db.Text
+  imageUrl    String?         @db.VarChar(500)
+  price       Decimal         @default(0) @db.Decimal(10, 2)
+  status      CourseStatus    @default(DRAFT)
+  courses     ProgramCourse[]
+  orderItems  OrderItem[]
+  certificates Certificate[]
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@map("programs")
+}
+
+model ProgramCourse {
+  programId Int
+  courseId  Int
+  order     Int     @default(0)
+  program   Program @relation(fields: [programId], references: [id], onDelete: Cascade)
+  course    Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@id([programId, courseId])
+  @@map("program_courses")
+}
+
+model Course {
+  id                 Int          @id @default(autoincrement())
+  code               String       @unique @db.VarChar(20)
+  title              String       @db.VarChar(200)
+  slug               String       @unique @db.VarChar(220)
+  subtitle           String?      @db.VarChar(300)
+  description        String?      @db.Text
+  objectives         Json?
+  audience           String?      @db.Text
+  requirements       String?      @db.Text
+  imageUrl           String?      @db.VarChar(500)
+  categoryId         Int?
+  category           Category?    @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  level              CourseLevel  @default(BASIC)
+  modality           Modality     @default(VIRTUAL)
+  durationHours      Int          @default(0)
+  price              Decimal      @default(0) @db.Decimal(10, 2)
+  currency           String       @default("USD") @db.VarChar(3)
+  isFree             Boolean      @default(false)
+  status             CourseStatus @default(DRAFT)
+  startDate          DateTime?
+  endDate            DateTime?
+  capacity           Int?
+  enforceSequence    Boolean      @default(false)
+  passingScore       Int          @default(70)
+  requireAllLessons  Boolean      @default(true)
+  minAttendancePct   Int          @default(0)
+  certificateEnabled Boolean      @default(true)
+  certificateTemplateId Int?
+  certificateTemplate   CertificateTemplate? @relation(fields: [certificateTemplateId], references: [id], onDelete: SetNull)
+  createdById        Int?
+  createdBy          User?        @relation("CourseCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+  deletedAt          DateTime?
+
+  instructors   CourseInstructor[]
+  competencies  CourseCompetency[]
+  modules       CourseModule[]
+  programs      ProgramCourse[]
+  bundles       BundleCourse[]
+  groups        CourseGroup[]
+  enrollments   Enrollment[]
+  assessments   Assessment[]
+  activities    PracticalActivity[]
+  rubrics       Rubric[]
+  forums        Forum[]
+  events        Event[]
+  announcements Announcement[]
+  certificates  Certificate[]
+  orderItems    OrderItem[]
+  coupons       Coupon[]
+  reviews       CourseReview[]
+  instructorEvals InstructorEvaluation[]
+  notes         AcademicNote[]
+  folders       Folder[]
+  studentCompetencies StudentCompetency[]
+  aiInteractions AiInteraction[]
+
+  @@index([status])
+  @@index([categoryId])
+  @@map("courses")
+}
+
+model CourseInstructor {
+  courseId     Int
+  instructorId Int
+  isLead       Boolean @default(true)
+  course       Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  instructor   User    @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+
+  @@id([courseId, instructorId])
+  @@index([instructorId])
+  @@map("course_instructors")
+}
+
+model CourseGroup {
+  id           Int          @id @default(autoincrement())
+  courseId     Int
+  course       Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  name         String       @db.VarChar(120)
+  instructorId Int?
+  instructor   User?        @relation(fields: [instructorId], references: [id], onDelete: SetNull)
+  startDate    DateTime?
+  endDate      DateTime?
+  capacity     Int?
+  enrollments  Enrollment[]
+  events       Event[]
+  forums       Forum[]
+  createdAt    DateTime     @default(now())
+
+  @@index([courseId])
+  @@map("course_groups")
+}
+
+model CourseModule {
+  id            Int       @id @default(autoincrement())
+  courseId      Int
+  course        Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  title         String    @db.VarChar(200)
+  description   String?   @db.Text
+  order         Int       @default(0)
+  isPublished   Boolean   @default(true)
+  availableFrom DateTime?
+  lessons       Lesson[]
+
+  @@index([courseId, order])
+  @@map("course_modules")
+}
+
+enum CompletionRule {
+  VIEW            // se completa al abrir la lección
+  MANUAL          // el estudiante marca "completada"
+  RESOURCES       // debe abrir todos los recursos obligatorios
+  ASSESSMENT      // debe aprobar la evaluación vinculada
+  ACTIVITY        // debe entregar la actividad vinculada
+}
+
+model Lesson {
+  id                   Int               @id @default(autoincrement())
+  moduleId             Int
+  module               CourseModule      @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  title                String            @db.VarChar(200)
+  summary              String?           @db.VarChar(500)
+  content              String?           @db.LongText
+  order                Int               @default(0)
+  durationMin          Int               @default(0)
+  isPublished          Boolean           @default(true)
+  isPreview            Boolean           @default(false)
+  availableFrom        DateTime?
+  completionRule       CompletionRule    @default(MANUAL)
+  requiredAssessmentId Int?
+  requiredAssessment   Assessment?       @relation("LessonGateAssessment", fields: [requiredAssessmentId], references: [id], onDelete: SetNull)
+  requiredActivityId   Int?
+  requiredActivity     PracticalActivity? @relation("LessonGateActivity", fields: [requiredActivityId], references: [id], onDelete: SetNull)
+  resources            LessonResource[]
+  progress             LessonProgress[]
+  comments             LessonComment[]
+  assessments          Assessment[]      @relation("LessonAssessments")
+  activities           PracticalActivity[] @relation("LessonActivities")
+  enrollmentsLast      Enrollment[]
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+
+  @@index([moduleId, order])
+  @@map("lessons")
+}
+
+enum ResourceType {
+  DOCUMENT
+  FILE
+  VIDEO
+  AUDIO
+  PRESENTATION
+  LINK
+  FOLDER
+  EMBED
+  LIVE_SESSION
+  RECORDING
+  ASSESSMENT
+  FORUM
+  ACTIVITY
+}
+
+model LessonResource {
+  id           Int                @id @default(autoincrement())
+  lessonId     Int
+  lesson       Lesson             @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  type         ResourceType
+  title        String             @db.VarChar(200)
+  description  String?            @db.Text
+  url          String?            @db.VarChar(1000)
+  fileId       Int?
+  file         File?              @relation(fields: [fileId], references: [id], onDelete: SetNull)
+  folderId     Int?
+  folder       Folder?            @relation(fields: [folderId], references: [id], onDelete: SetNull)
+  assessmentId Int?
+  assessment   Assessment?        @relation(fields: [assessmentId], references: [id], onDelete: SetNull)
+  forumId      Int?
+  forum        Forum?             @relation(fields: [forumId], references: [id], onDelete: SetNull)
+  activityId   Int?
+  activity     PracticalActivity? @relation(fields: [activityId], references: [id], onDelete: SetNull)
+  eventId      Int?
+  event        Event?             @relation(fields: [eventId], references: [id], onDelete: SetNull)
+  order        Int                @default(0)
+  isRequired   Boolean            @default(false)
+  isDownloadable Boolean          @default(true)
+  progress     ResourceProgress[]
+  createdAt    DateTime           @default(now())
+
+  @@index([lessonId, order])
+  @@map("lesson_resources")
+}
+
+model Folder {
+  id        Int              @id @default(autoincrement())
+  name      String           @db.VarChar(200)
+  courseId  Int?
+  course    Course?          @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  files     File[]
+  resources LessonResource[]
+  createdAt DateTime         @default(now())
+
+  @@map("folders")
+}
+
+model File {
+  id           Int              @id @default(autoincrement())
+  ownerId      Int?
+  owner        User?            @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+  originalName String           @db.VarChar(255)
+  storedName   String           @unique @db.VarChar(255)
+  mimeType     String           @db.VarChar(120)
+  size         Int
+  folderId     Int?
+  folder       Folder?          @relation(fields: [folderId], references: [id], onDelete: SetNull)
+  isPublic     Boolean          @default(false)
+  resources    LessonResource[]
+  submissions  SubmissionFile[]
+  createdAt    DateTime         @default(now())
+
+  @@index([ownerId])
+  @@map("files")
+}
+
+// ───────────────────────── Inscripciones y progreso ─────────────────────────
+
+enum EnrollmentStatus {
+  PENDING_PAYMENT
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum EnrollmentSource {
+  FREE
+  PURCHASE
+  ADMIN
+  SUBSCRIPTION
+  PROGRAM
+}
+
+model Enrollment {
+  id           Int              @id @default(autoincrement())
+  userId       Int
+  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId     Int
+  course       Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  groupId      Int?
+  group        CourseGroup?     @relation(fields: [groupId], references: [id], onDelete: SetNull)
+  status       EnrollmentStatus @default(ACTIVE)
+  source       EnrollmentSource @default(ADMIN)
+  progressPct  Int              @default(0)
+  finalGrade   Decimal?         @db.Decimal(5, 2)
+  lastLessonId Int?
+  lastLesson   Lesson?          @relation(fields: [lastLessonId], references: [id], onDelete: SetNull)
+  enrolledAt   DateTime         @default(now())
+  completedAt  DateTime?
+  orderItemId  Int?
+
+  @@unique([userId, courseId])
+  @@index([courseId, status])
+  @@map("enrollments")
+}
+
+enum ProgressStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+}
+
+model LessonProgress {
+  id           Int            @id @default(autoincrement())
+  userId       Int
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lessonId     Int
+  lesson       Lesson         @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  status       ProgressStatus @default(IN_PROGRESS)
+  firstViewAt  DateTime       @default(now())
+  lastViewAt   DateTime       @default(now())
+  completedAt  DateTime?
+  timeSpentSec Int            @default(0)
+
+  @@unique([userId, lessonId])
+  @@index([lessonId])
+  @@map("lesson_progress")
+}
+
+model ResourceProgress {
+  userId     Int
+  resourceId Int
+  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resource   LessonResource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  viewedAt   DateTime       @default(now())
+
+  @@id([userId, resourceId])
+  @@map("resource_progress")
+}
+
+// ───────────────────────── Evaluaciones ─────────────────────────
+
+enum AssessmentType {
+  QUIZ
+  DIAGNOSTIC
+  SELF_ASSESSMENT
+  FINAL
+  PRACTICAL
+  PEER
+}
+
+enum QuestionType {
+  MULTIPLE_CHOICE
+  MULTIPLE_SELECT
+  TRUE_FALSE
+  OPEN
+  SCALE
+}
+
+model Assessment {
+  id             Int                 @id @default(autoincrement())
+  courseId       Int
+  course         Course              @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessonId       Int?
+  lesson         Lesson?             @relation("LessonAssessments", fields: [lessonId], references: [id], onDelete: SetNull)
+  title          String              @db.VarChar(200)
+  description    String?             @db.Text
+  type           AssessmentType      @default(QUIZ)
+  timeLimitMin   Int?
+  maxAttempts    Int                 @default(1)
+  passingScore   Int                 @default(70)
+  weight         Int                 @default(0)
+  shuffle        Boolean             @default(false)
+  showResults    Boolean             @default(true)
+  isPublished    Boolean             @default(true)
+  availableFrom  DateTime?
+  availableUntil DateTime?
+  rubricId       Int?
+  rubric         Rubric?             @relation(fields: [rubricId], references: [id], onDelete: SetNull)
+  questions      Question[]
+  attempts       AssessmentAttempt[]
+  gatedLessons   Lesson[]            @relation("LessonGateAssessment")
+  resources      LessonResource[]
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+
+  @@index([courseId])
+  @@map("assessments")
+}
+
+model Question {
+  id           Int              @id @default(autoincrement())
+  assessmentId Int
+  assessment   Assessment       @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  type         QuestionType
+  text         String           @db.Text
+  explanation  String?          @db.Text
+  points       Int              @default(1)
+  order        Int              @default(0)
+  scaleMax     Int?
+  competencyId Int?
+  competency   Competency?      @relation(fields: [competencyId], references: [id], onDelete: SetNull)
+  options      QuestionOption[]
+  answers      AttemptAnswer[]
+
+  @@index([assessmentId, order])
+  @@map("questions")
+}
+
+model QuestionOption {
+  id         Int      @id @default(autoincrement())
+  questionId Int
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  text       String   @db.VarChar(500)
+  isCorrect  Boolean  @default(false)
+  order      Int      @default(0)
+
+  @@map("question_options")
+}
+
+enum AttemptStatus {
+  IN_PROGRESS
+  SUBMITTED
+  GRADED
+}
+
+model AssessmentAttempt {
+  id           Int             @id @default(autoincrement())
+  assessmentId Int
+  assessment   Assessment      @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  userId       Int
+  user         User            @relation("AttemptStudent", fields: [userId], references: [id], onDelete: Cascade)
+  status       AttemptStatus   @default(IN_PROGRESS)
+  startedAt    DateTime        @default(now())
+  submittedAt  DateTime?
+  score        Decimal?        @db.Decimal(7, 2)
+  maxScore     Decimal?        @db.Decimal(7, 2)
+  percentage   Decimal?        @db.Decimal(5, 2)
+  passed       Boolean?
+  gradedById   Int?
+  gradedBy     User?           @relation("AttemptGrader", fields: [gradedById], references: [id], onDelete: SetNull)
+  feedback     String?         @db.Text
+  answers      AttemptAnswer[]
+  feedbacks    Feedback[]
+
+  @@index([assessmentId, userId])
+  @@map("assessment_attempts")
+}
+
+model AttemptAnswer {
+  id                Int               @id @default(autoincrement())
+  attemptId         Int
+  attempt           AssessmentAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  questionId        Int
+  question          Question          @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  selectedOptionIds Json?
+  textAnswer        String?           @db.Text
+  scaleValue        Int?
+  isCorrect         Boolean?
+  pointsAwarded     Decimal?          @db.Decimal(7, 2)
+  feedback          String?           @db.Text
+
+  @@unique([attemptId, questionId])
+  @@map("answers")
+}
+
+// ───────────────────────── Competencias y rúbricas ─────────────────────────
+
+model RatingScale {
+  id           Int          @id @default(autoincrement())
+  name         String       @db.VarChar(100)
+  min          Int          @default(1)
+  max          Int          @default(5)
+  labels       Json?
+  competencies Competency[]
+  rubrics      Rubric[]
+
+  @@map("rating_scales")
+}
+
+model Competency {
+  id          Int                 @id @default(autoincrement())
+  key         String              @unique @db.VarChar(60)
+  name        String              @db.VarChar(120)
+  description String?             @db.Text
+  group       String?             @db.VarChar(80)
+  isActive    Boolean             @default(true)
+  scaleId     Int?
+  scale       RatingScale?        @relation(fields: [scaleId], references: [id], onDelete: SetNull)
+  courses     CourseCompetency[]
+  activities  ActivityCompetency[]
+  criteria    RubricCriterion[]
+  questions   Question[]
+  results     StudentCompetency[]
+  scenarios   AiScenarioCompetency[]
+  challenges  Challenge[]
+  badges      Badge[]
+
+  @@map("competencies")
+}
+
+model CourseCompetency {
+  courseId     Int
+  competencyId Int
+  course       Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  competency   Competency @relation(fields: [competencyId], references: [id], onDelete: Cascade)
+
+  @@id([courseId, competencyId])
+  @@map("course_competencies")
+}
+
+enum CompetencySource {
+  RUBRIC
+  ASSESSMENT
+  SELF
+  INSTRUCTOR
+  PEER
+  AI
+}
+
+model StudentCompetency {
+  id           Int              @id @default(autoincrement())
+  userId       Int
+  user         User             @relation("CompetencyStudent", fields: [userId], references: [id], onDelete: Cascade)
+  competencyId Int
+  competency   Competency       @relation(fields: [competencyId], references: [id], onDelete: Cascade)
+  courseId     Int?
+  course       Course?          @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  score        Decimal          @db.Decimal(4, 2)
+  scaleMax     Int              @default(5)
+  source       CompetencySource
+  sourceRefId  Int?
+  evaluatorId  Int?
+  evaluator    User?            @relation("CompetencyEvaluator", fields: [evaluatorId], references: [id], onDelete: SetNull)
+  notes        String?          @db.Text
+  isReviewed   Boolean          @default(true)
+  recordedAt   DateTime         @default(now())
+
+  @@index([userId, competencyId, recordedAt])
+  @@map("student_competencies")
+}
+
+model Rubric {
+  id          Int                 @id @default(autoincrement())
+  title       String              @db.VarChar(200)
+  description String?             @db.Text
+  courseId    Int?
+  course      Course?             @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  scaleId     Int?
+  scale       RatingScale?        @relation(fields: [scaleId], references: [id], onDelete: SetNull)
+  createdById Int?
+  createdBy   User?               @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  criteria    RubricCriterion[]
+  assessments Assessment[]
+  activities  PracticalActivity[]
+  createdAt   DateTime            @default(now())
+
+  @@map("rubrics")
+}
+
+model RubricCriterion {
+  id           Int           @id @default(autoincrement())
+  rubricId     Int
+  rubric       Rubric        @relation(fields: [rubricId], references: [id], onDelete: Cascade)
+  title        String        @db.VarChar(200)
+  description  String?       @db.Text
+  competencyId Int?
+  competency   Competency?   @relation(fields: [competencyId], references: [id], onDelete: SetNull)
+  weight       Int           @default(1)
+  maxScore     Int           @default(5)
+  order        Int           @default(0)
+  levels       RubricLevel[]
+  scores       RubricScore[]
+
+  @@map("rubric_criteria")
+}
+
+model RubricLevel {
+  id          Int             @id @default(autoincrement())
+  criterionId Int
+  criterion   RubricCriterion @relation(fields: [criterionId], references: [id], onDelete: Cascade)
+  score       Int
+  label       String          @db.VarChar(100)
+  description String?         @db.Text
+
+  @@map("rubric_levels")
+}
+
+enum FeedbackTarget {
+  SUBMISSION
+  ATTEMPT
+  SIMULATION
+  GENERAL
+}
+
+model Feedback {
+  id              Int                 @id @default(autoincrement())
+  target          FeedbackTarget
+  submissionId    Int?
+  submission      ActivitySubmission? @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  attemptId       Int?
+  attempt         AssessmentAttempt?  @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  simulationId    Int?
+  simulation      AiSimulation?       @relation(fields: [simulationId], references: [id], onDelete: Cascade)
+  authorId        Int
+  author          User                @relation("FeedbackAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  studentId       Int
+  student         User                @relation("FeedbackStudent", fields: [studentId], references: [id], onDelete: Cascade)
+  comment         String?             @db.Text
+  observations    String?             @db.Text
+  recommendations String?             @db.Text
+  totalScore      Decimal?            @db.Decimal(7, 2)
+  rubricScores    RubricScore[]
+  createdAt       DateTime            @default(now())
+
+  @@index([studentId])
+  @@map("feedback")
+}
+
+model RubricScore {
+  id          Int             @id @default(autoincrement())
+  feedbackId  Int
+  feedback    Feedback        @relation(fields: [feedbackId], references: [id], onDelete: Cascade)
+  criterionId Int
+  criterion   RubricCriterion @relation(fields: [criterionId], references: [id], onDelete: Cascade)
+  score       Decimal         @db.Decimal(4, 2)
+  comment     String?         @db.Text
+
+  @@unique([feedbackId, criterionId])
+  @@map("rubric_scores")
+}
+
+// ───────────────────────── Talleres y prácticas ─────────────────────────
+
+enum ActivityType {
+  INDIVIDUAL
+  GROUP
+  ROLE_PLAY
+  NEGOTIATION
+  DIFFICULT_CONVERSATION
+  PUBLIC_SPEAKING
+  CASE_STUDY
+}
+
+model PracticalActivity {
+  id                  Int                  @id @default(autoincrement())
+  courseId            Int
+  course              Course               @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessonId            Int?
+  lesson              Lesson?              @relation("LessonActivities", fields: [lessonId], references: [id], onDelete: SetNull)
+  title               String               @db.VarChar(200)
+  description         String?              @db.Text
+  instructions        String?              @db.Text
+  scenario            String?              @db.Text
+  roles               Json?
+  type                ActivityType         @default(INDIVIDUAL)
+  submissionTypes     Json?
+  dueDate             DateTime?
+  maxScore            Int                  @default(100)
+  rubricId            Int?
+  rubric              Rubric?              @relation(fields: [rubricId], references: [id], onDelete: SetNull)
+  peerReview          Boolean              @default(false)
+  peerReviewsRequired Int                  @default(0)
+  isPublished         Boolean              @default(true)
+  competencies        ActivityCompetency[]
+  groups              ActivityGroup[]
+  submissions         ActivitySubmission[]
+  gatedLessons        Lesson[]             @relation("LessonGateActivity")
+  resources           LessonResource[]
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+
+  @@index([courseId])
+  @@map("practical_activities")
+}
+
+model ActivityCompetency {
+  activityId   Int
+  competencyId Int
+  activity     PracticalActivity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  competency   Competency        @relation(fields: [competencyId], references: [id], onDelete: Cascade)
+
+  @@id([activityId, competencyId])
+  @@map("activity_competencies")
+}
+
+model ActivityGroup {
+  id          Int                   @id @default(autoincrement())
+  activityId  Int
+  activity    PracticalActivity     @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  name        String                @db.VarChar(120)
+  members     ActivityGroupMember[]
+  submissions ActivitySubmission[]
+
+  @@map("activity_groups")
+}
+
+model ActivityGroupMember {
+  groupId Int
+  userId  Int
+  group   ActivityGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user    User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role    String?       @db.VarChar(100)
+
+  @@id([groupId, userId])
+  @@map("activity_group_members")
+}
+
+enum SubmissionStatus {
+  SUBMITTED
+  GRADED
+  RETURNED
+}
+
+model ActivitySubmission {
+  id          Int               @id @default(autoincrement())
+  activityId  Int
+  activity    PracticalActivity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  userId      Int
+  user        User              @relation("SubmissionStudent", fields: [userId], references: [id], onDelete: Cascade)
+  groupId     Int?
+  group       ActivityGroup?    @relation(fields: [groupId], references: [id], onDelete: SetNull)
+  text        String?           @db.Text
+  linkUrl     String?           @db.VarChar(1000)
+  status      SubmissionStatus  @default(SUBMITTED)
+  score       Decimal?          @db.Decimal(7, 2)
+  submittedAt DateTime          @default(now())
+  gradedAt    DateTime?
+  gradedById  Int?
+  gradedBy    User?             @relation("SubmissionGrader", fields: [gradedById], references: [id], onDelete: SetNull)
+  files       SubmissionFile[]
+  feedbacks   Feedback[]
+  peerReviews PeerReview[]
+
+  @@index([activityId, userId])
+  @@map("activity_submissions")
+}
+
+model SubmissionFile {
+  submissionId Int
+  fileId       Int
+  submission   ActivitySubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  file         File               @relation(fields: [fileId], references: [id], onDelete: Cascade)
+
+  @@id([submissionId, fileId])
+  @@map("submission_files")
+}
+
+model PeerReview {
+  id           Int                @id @default(autoincrement())
+  submissionId Int
+  submission   ActivitySubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  reviewerId   Int
+  reviewer     User               @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
+  score        Decimal?           @db.Decimal(7, 2)
+  scores       Json?
+  comment      String?            @db.Text
+  createdAt    DateTime           @default(now())
+
+  @@unique([submissionId, reviewerId])
+  @@map("peer_reviews")
+}
+
+// ───────────────────────── Calendario y asistencia ─────────────────────────
+
+enum EventType {
+  CLASS
+  WORKSHOP
+  INDIVIDUAL_SESSION
+  VIRTUAL_CLASS
+  EXAM
+  DEADLINE
+  OTHER
+}
+
+model Event {
+  id              Int                @id @default(autoincrement())
+  title           String             @db.VarChar(200)
+  description     String?            @db.Text
+  type            EventType          @default(CLASS)
+  courseId        Int?
+  course          Course?            @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  groupId         Int?
+  group           CourseGroup?       @relation(fields: [groupId], references: [id], onDelete: SetNull)
+  instructorId    Int?
+  instructor      User?              @relation("EventInstructor", fields: [instructorId], references: [id], onDelete: SetNull)
+  startAt         DateTime
+  endAt           DateTime
+  location        String?            @db.VarChar(255)
+  meetingUrl      String?            @db.VarChar(1000)
+  meetingProvider String?            @db.VarChar(40)
+  recordingUrl    String?            @db.VarChar(1000)
+  isPublic        Boolean            @default(false)
+  reminderMinutes Int?               @default(60)
+  reminderSentAt  DateTime?
+  createdById     Int?
+  createdBy       User?              @relation("EventCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  participants    EventParticipant[]
+  attendance      Attendance[]
+  resources       LessonResource[]
+  createdAt       DateTime           @default(now())
+
+  @@index([startAt])
+  @@index([courseId])
+  @@index([instructorId])
+  @@map("events")
+}
+
+model EventParticipant {
+  eventId Int
+  userId  Int
+  event   Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user    User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([eventId, userId])
+  @@map("event_participants")
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+  EXCUSED
+}
+
+model Attendance {
+  id           Int              @id @default(autoincrement())
+  eventId      Int
+  event        Event            @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  userId       Int
+  user         User             @relation("AttendanceStudent", fields: [userId], references: [id], onDelete: Cascade)
+  status       AttendanceStatus
+  notes        String?          @db.VarChar(500)
+  recordedById Int?
+  recordedBy   User?            @relation("AttendanceRecorder", fields: [recordedById], references: [id], onDelete: SetNull)
+  recordedAt   DateTime         @default(now())
+
+  @@unique([eventId, userId])
+  @@index([userId])
+  @@map("attendance")
+}
+
+model InstructorAvailability {
+  id           Int    @id @default(autoincrement())
+  instructorId Int
+  instructor   User   @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+  weekday      Int    // 0 = domingo … 6 = sábado
+  startTime    String @db.VarChar(5) // "09:00"
+  endTime      String @db.VarChar(5)
+
+  @@index([instructorId])
+  @@map("instructor_availability")
+}
+
+model InstructorEvaluation {
+  id           Int      @id @default(autoincrement())
+  instructorId Int
+  instructor   User     @relation("EvalInstructor", fields: [instructorId], references: [id], onDelete: Cascade)
+  evaluatorId  Int
+  evaluator    User     @relation("EvalEvaluator", fields: [evaluatorId], references: [id], onDelete: Cascade)
+  courseId     Int?
+  course       Course?  @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  rating       Int
+  comment      String?  @db.Text
+  createdAt    DateTime @default(now())
+
+  @@index([instructorId])
+  @@map("instructor_evaluations")
+}
+
+model CourseReview {
+  id         Int      @id @default(autoincrement())
+  courseId   Int
+  course     Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rating     Int
+  comment    String?  @db.Text
+  isApproved Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  @@unique([courseId, userId])
+  @@map("course_reviews")
+}
+
+model AcademicNote {
+  id        Int      @id @default(autoincrement())
+  studentId Int
+  student   User     @relation("NoteStudent", fields: [studentId], references: [id], onDelete: Cascade)
+  authorId  Int
+  author    User     @relation("NoteAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  courseId  Int?
+  course    Course?  @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  note      String   @db.Text
+  isPrivate Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  @@index([studentId])
+  @@map("academic_notes")
+}
+
+// ───────────────────────── Certificaciones ─────────────────────────
+
+model CertificateTemplate {
+  id              Int           @id @default(autoincrement())
+  name            String        @db.VarChar(120)
+  heading         String        @default("Certificado de Aprobación") @db.VarChar(200)
+  body            String        @db.Text
+  primaryColor    String        @default("#EE7A2F") @db.VarChar(9)
+  signatureName   String?       @db.VarChar(120)
+  signatureTitle  String?       @db.VarChar(120)
+  signatureFileId Int?
+  logoFileId      Int?
+  isDefault       Boolean       @default(false)
+  certificates    Certificate[]
+  courses         Course[]
+  createdAt       DateTime      @default(now())
+
+  @@map("certificate_templates")
+}
+
+enum CertificateStatus {
+  VALID
+  REVOKED
+}
+
+model Certificate {
+  id            Int                  @id @default(autoincrement())
+  code          String               @unique @db.VarChar(40)
+  userId        Int
+  user          User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId      Int?
+  course        Course?              @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  programId     Int?
+  program       Program?             @relation(fields: [programId], references: [id], onDelete: SetNull)
+  templateId    Int?
+  template      CertificateTemplate? @relation(fields: [templateId], references: [id], onDelete: SetNull)
+  recipientName String               @db.VarChar(200)
+  title         String               @db.VarChar(250)
+  hours         Int?
+  finalGrade    Decimal?             @db.Decimal(5, 2)
+  status        CertificateStatus    @default(VALID)
+  revokedReason String?              @db.VarChar(500)
+  issuedAt      DateTime             @default(now())
+
+  @@index([userId])
+  @@map("certificates")
+}
+
+// ───────────────────────── Gamificación ─────────────────────────
+
+model Level {
+  id        Int              @id @default(autoincrement())
+  number    Int              @unique
+  name      String           @db.VarChar(80)
+  minPoints Int
+  students  StudentProfile[]
+
+  @@map("levels")
+}
+
+model PointRule {
+  id          Int      @id @default(autoincrement())
+  event       String   @unique @db.VarChar(60)
+  name        String   @db.VarChar(120)
+  points      Int
+  isActive    Boolean  @default(true)
+  dailyCap    Int?
+  updatedAt   DateTime @updatedAt
+
+  @@map("point_rules")
+}
+
+model PointTransaction {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  points    Int
+  event     String   @db.VarChar(60)
+  reason    String   @db.VarChar(255)
+  refType   String?  @db.VarChar(40)
+  refId     Int?
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([event, refType, refId])
+  @@map("point_transactions")
+}
+
+model Badge {
+  id           Int           @id @default(autoincrement())
+  key          String        @unique @db.VarChar(60)
+  name         String        @db.VarChar(120)
+  description  String        @db.VarChar(500)
+  icon         String        @default("award") @db.VarChar(40)
+  criteria     Json
+  competencyId Int?
+  competency   Competency?   @relation(fields: [competencyId], references: [id], onDelete: SetNull)
+  points       Int           @default(0)
+  isActive     Boolean       @default(true)
+  achievements Achievement[]
+
+  @@map("badges")
+}
+
+model Achievement {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badgeId   Int
+  badge     Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+  awardedAt DateTime @default(now())
+
+  @@unique([userId, badgeId])
+  @@map("achievements")
+}
+
+model Challenge {
+  id           Int                   @id @default(autoincrement())
+  title        String                @db.VarChar(200)
+  description  String                @db.Text
+  startsAt     DateTime
+  endsAt       DateTime
+  points       Int                   @default(50)
+  criteria     Json
+  competencyId Int?
+  competency   Competency?           @relation(fields: [competencyId], references: [id], onDelete: SetNull)
+  isActive     Boolean               @default(true)
+  completions  ChallengeCompletion[]
+
+  @@map("challenges")
+}
+
+model ChallengeCompletion {
+  challengeId Int
+  userId      Int
+  challenge   Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  completedAt DateTime  @default(now())
+
+  @@id([challengeId, userId])
+  @@map("challenge_completions")
+}
+
+model Recognition {
+  id        Int      @id @default(autoincrement())
+  fromId    Int
+  from      User     @relation("RecognitionFrom", fields: [fromId], references: [id], onDelete: Cascade)
+  toId      Int
+  to        User     @relation("RecognitionTo", fields: [toId], references: [id], onDelete: Cascade)
+  kind      String   @db.VarChar(60)
+  message   String   @db.VarChar(500)
+  createdAt DateTime @default(now())
+
+  @@index([toId])
+  @@map("recognitions")
+}
+
+// ───────────────────────── Comunidad y comunicación ─────────────────────────
+
+enum ForumType {
+  GENERAL
+  COURSE
+  GROUP
+  EXPERIENCES
+  QA
+}
+
+enum ModerationStatus {
+  VISIBLE
+  HIDDEN
+  FLAGGED
+}
+
+model Forum {
+  id          Int              @id @default(autoincrement())
+  title       String           @db.VarChar(200)
+  description String?          @db.Text
+  type        ForumType        @default(GENERAL)
+  courseId    Int?
+  course      Course?          @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  groupId     Int?
+  group       CourseGroup?     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  isLocked    Boolean          @default(false)
+  threads     ForumThread[]
+  resources   LessonResource[]
+  createdAt   DateTime         @default(now())
+
+  @@index([courseId])
+  @@map("forums")
+}
+
+model ForumThread {
+  id         Int         @id @default(autoincrement())
+  forumId    Int
+  forum      Forum       @relation(fields: [forumId], references: [id], onDelete: Cascade)
+  authorId   Int
+  author     User        @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  title      String      @db.VarChar(250)
+  isPinned   Boolean     @default(false)
+  isLocked   Boolean     @default(false)
+  status     ModerationStatus @default(VISIBLE)
+  posts      ForumPost[]
+  lastPostAt DateTime    @default(now())
+  createdAt  DateTime    @default(now())
+
+  @@index([forumId, lastPostAt])
+  @@map("forum_threads")
+}
+
+model ForumPost {
+  id        Int              @id @default(autoincrement())
+  threadId  Int
+  thread    ForumThread      @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  authorId  Int
+  author    User             @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  parentId  Int?
+  parent    ForumPost?       @relation("PostReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   ForumPost[]      @relation("PostReplies")
+  content   String           @db.Text
+  status    ModerationStatus @default(VISIBLE)
+  editedAt  DateTime?
+  createdAt DateTime         @default(now())
+
+  @@index([threadId, createdAt])
+  @@map("forum_posts")
+}
+
+model LessonComment {
+  id        Int              @id @default(autoincrement())
+  lessonId  Int
+  lesson    Lesson           @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  userId    Int
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parentId  Int?
+  parent    LessonComment?   @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   LessonComment[]  @relation("CommentReplies")
+  content   String           @db.Text
+  status    ModerationStatus @default(VISIBLE)
+  createdAt DateTime         @default(now())
+
+  @@index([lessonId, createdAt])
+  @@map("lesson_comments")
+}
+
+model ContentReport {
+  id           Int       @id @default(autoincrement())
+  reporterId   Int
+  reporter     User      @relation("ReportReporter", fields: [reporterId], references: [id], onDelete: Cascade)
+  targetType   String    @db.VarChar(30) // FORUM_POST | LESSON_COMMENT | THREAD
+  targetId     Int
+  reason       String    @db.VarChar(500)
+  status       String    @default("OPEN") @db.VarChar(20) // OPEN | RESOLVED | DISMISSED
+  resolvedById Int?
+  resolvedBy   User?     @relation("ReportResolver", fields: [resolvedById], references: [id], onDelete: SetNull)
+  resolvedAt   DateTime?
+  createdAt    DateTime  @default(now())
+
+  @@index([status])
+  @@map("content_reports")
+}
+
+model Conversation {
+  id           Int                       @id @default(autoincrement())
+  subject      String?                   @db.VarChar(200)
+  participants ConversationParticipant[]
+  messages     Message[]
+  updatedAt    DateTime                  @updatedAt
+  createdAt    DateTime                  @default(now())
+
+  @@map("conversations")
+}
+
+model ConversationParticipant {
+  conversationId Int
+  userId         Int
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lastReadAt     DateTime?
+
+  @@id([conversationId, userId])
+  @@index([userId])
+  @@map("conversation_participants")
+}
+
+model Message {
+  id             Int          @id @default(autoincrement())
+  conversationId Int
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderId       Int
+  sender         User         @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  body           String       @db.Text
+  createdAt      DateTime     @default(now())
+
+  @@index([conversationId, createdAt])
+  @@map("messages")
+}
+
+enum Audience {
+  ALL
+  STUDENTS
+  INSTRUCTORS
+  COURSE
+}
+
+model Announcement {
+  id          Int      @id @default(autoincrement())
+  title       String   @db.VarChar(200)
+  body        String   @db.Text
+  audience    Audience @default(ALL)
+  courseId    Int?
+  course      Course?  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  authorId    Int
+  author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  isPinned    Boolean  @default(false)
+  publishedAt DateTime @default(now())
+
+  @@index([audience, publishedAt])
+  @@map("announcements")
+}
+
+model Notification {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String    @db.VarChar(50)
+  title     String    @db.VarChar(200)
+  body      String?   @db.VarChar(1000)
+  link      String?   @db.VarChar(500)
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId, readAt])
+  @@map("notifications")
+}
+
+model EmailOutbox {
+  id        Int       @id @default(autoincrement())
+  to        String    @db.VarChar(191)
+  subject   String    @db.VarChar(255)
+  html      String    @db.MediumText
+  status    String    @default("QUEUED") @db.VarChar(20) // QUEUED | SENT | FAILED | LOGGED
+  error     String?   @db.VarChar(1000)
+  sentAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([status])
+  @@map("email_outbox")
+}
+
+// ───────────────────────── Comercial: pedidos y pagos ─────────────────────────
+
+model Bundle {
+  id          Int            @id @default(autoincrement())
+  title       String         @db.VarChar(200)
+  slug        String         @unique @db.VarChar(220)
+  description String?        @db.Text
+  price       Decimal        @db.Decimal(10, 2)
+  isActive    Boolean        @default(true)
+  courses     BundleCourse[]
+  orderItems  OrderItem[]
+  createdAt   DateTime       @default(now())
+
+  @@map("bundles")
+}
+
+model BundleCourse {
+  bundleId Int
+  courseId Int
+  bundle   Bundle @relation(fields: [bundleId], references: [id], onDelete: Cascade)
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@id([bundleId, courseId])
+  @@map("bundle_courses")
+}
+
+enum BillingInterval {
+  MONTH
+  YEAR
+}
+
+model SubscriptionPlan {
+  id            Int             @id @default(autoincrement())
+  name          String          @db.VarChar(120)
+  description   String?         @db.Text
+  price         Decimal         @db.Decimal(10, 2)
+  interval      BillingInterval @default(MONTH)
+  includesAll   Boolean         @default(true)
+  isActive      Boolean         @default(true)
+  subscriptions Subscription[]
+  orderItems    OrderItem[]
+
+  @@map("subscription_plans")
+}
+
+enum SubscriptionStatus {
+  PENDING
+  ACTIVE
+  CANCELLED
+  EXPIRED
+}
+
+model Subscription {
+  id                 Int                @id @default(autoincrement())
+  userId             Int
+  user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  planId             Int
+  plan               SubscriptionPlan   @relation(fields: [planId], references: [id])
+  status             SubscriptionStatus @default(PENDING)
+  currentPeriodStart DateTime?
+  currentPeriodEnd   DateTime?
+  cancelledAt        DateTime?
+  createdAt          DateTime           @default(now())
+
+  @@index([userId, status])
+  @@map("subscriptions")
+}
+
+enum DiscountType {
+  PERCENT
+  FIXED
+}
+
+model Coupon {
+  id           Int                @id @default(autoincrement())
+  code         String             @unique @db.VarChar(40)
+  description  String?            @db.VarChar(255)
+  type         DiscountType
+  value        Decimal            @db.Decimal(10, 2)
+  maxUses      Int?
+  usedCount    Int                @default(0)
+  perUserLimit Int                @default(1)
+  minAmount    Decimal?           @db.Decimal(10, 2)
+  courseId     Int?
+  course       Course?            @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  validFrom    DateTime?
+  validUntil   DateTime?
+  isActive     Boolean            @default(true)
+  redemptions  CouponRedemption[]
+  orders       Order[]
+  createdAt    DateTime           @default(now())
+
+  @@map("coupons")
+}
+
+model CouponRedemption {
+  id        Int      @id @default(autoincrement())
+  couponId  Int
+  coupon    Coupon   @relation(fields: [couponId], references: [id], onDelete: Cascade)
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orderId   Int      @unique
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@index([couponId, userId])
+  @@map("coupon_redemptions")
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  FAILED
+  CANCELLED
+  REFUNDED
+}
+
+model Order {
+  id         Int               @id @default(autoincrement())
+  number     String            @unique @db.VarChar(30)
+  userId     Int
+  user       User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status     OrderStatus       @default(PENDING)
+  subtotal   Decimal           @db.Decimal(10, 2)
+  discount   Decimal           @default(0) @db.Decimal(10, 2)
+  tax        Decimal           @default(0) @db.Decimal(10, 2)
+  total      Decimal           @db.Decimal(10, 2)
+  currency   String            @default("USD") @db.VarChar(3)
+  couponId   Int?
+  coupon     Coupon?           @relation(fields: [couponId], references: [id], onDelete: SetNull)
+  provider   String            @default("SANDBOX") @db.VarChar(30)
+  notes      String?           @db.VarChar(500)
+  items      OrderItem[]
+  payments   Payment[]
+  invoice    Invoice?
+  redemption CouponRedemption?
+  createdAt  DateTime          @default(now())
+  paidAt     DateTime?
+
+  @@index([userId])
+  @@index([status, createdAt])
+  @@map("orders")
+}
+
+enum ItemType {
+  COURSE
+  PROGRAM
+  BUNDLE
+  SUBSCRIPTION
+}
+
+model OrderItem {
+  id          Int               @id @default(autoincrement())
+  orderId     Int
+  order       Order             @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  itemType    ItemType
+  courseId    Int?
+  course      Course?           @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  programId   Int?
+  program     Program?          @relation(fields: [programId], references: [id], onDelete: SetNull)
+  bundleId    Int?
+  bundle      Bundle?           @relation(fields: [bundleId], references: [id], onDelete: SetNull)
+  planId      Int?
+  plan        SubscriptionPlan? @relation(fields: [planId], references: [id], onDelete: SetNull)
+  description String            @db.VarChar(255)
+  unitPrice   Decimal           @db.Decimal(10, 2)
+  quantity    Int               @default(1)
+  total       Decimal           @db.Decimal(10, 2)
+
+  @@map("order_items")
+}
+
+enum PaymentStatus {
+  PENDING
+  APPROVED
+  DECLINED
+  REFUNDED
+}
+
+model Payment {
+  id          Int           @id @default(autoincrement())
+  orderId     Int
+  order       Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  provider    String        @db.VarChar(30)
+  providerRef String?       @db.VarChar(120)
+  amount      Decimal       @db.Decimal(10, 2)
+  currency    String        @default("USD") @db.VarChar(3)
+  status      PaymentStatus @default(PENDING)
+  isTest      Boolean       @default(true)
+  method      String?       @db.VarChar(40)
+  raw         Json?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([orderId])
+  @@index([status, createdAt])
+  @@map("payments")
+}
+
+model Invoice {
+  id          Int      @id @default(autoincrement())
+  number      String   @unique @db.VarChar(30)
+  orderId     Int      @unique
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  billingName String   @db.VarChar(200)
+  billingTaxId String? @db.VarChar(30)  // RNC o cédula
+  ncf         String?  @db.VarChar(30)  // comprobante fiscal (pendiente de configurar)
+  subtotal    Decimal  @db.Decimal(10, 2)
+  discount    Decimal  @default(0) @db.Decimal(10, 2)
+  tax         Decimal  @default(0) @db.Decimal(10, 2)
+  total       Decimal  @db.Decimal(10, 2)
+  currency    String   @default("USD") @db.VarChar(3)
+  isTest      Boolean  @default(true)
+  issuedAt    DateTime @default(now())
+
+  @@index([userId])
+  @@map("invoices")
+}
+
+// ───────────────────────── Inteligencia artificial ─────────────────────────
+
+model AiScenario {
+  id           Int                    @id @default(autoincrement())
+  key          String                 @unique @db.VarChar(60)
+  title        String                 @db.VarChar(200)
+  description  String                 @db.Text
+  persona      String                 @db.Text
+  context      String                 @db.Text
+  objectives   Json
+  difficulty   CourseLevel            @default(BASIC)
+  openingLine  String                 @db.Text
+  isActive     Boolean                @default(true)
+  competencies AiScenarioCompetency[]
+  simulations  AiSimulation[]
+
+  @@map("ai_scenarios")
+}
+
+model AiScenarioCompetency {
+  scenarioId   Int
+  competencyId Int
+  scenario     AiScenario @relation(fields: [scenarioId], references: [id], onDelete: Cascade)
+  competency   Competency @relation(fields: [competencyId], references: [id], onDelete: Cascade)
+
+  @@id([scenarioId, competencyId])
+  @@map("ai_scenario_competencies")
+}
+
+enum SimulationStatus {
+  ACTIVE
+  COMPLETED
+  ABANDONED
+}
+
+enum ReviewStatus {
+  PENDING
+  AI_GENERATED
+  REVIEWED
+}
+
+model AiSimulation {
+  id               Int              @id @default(autoincrement())
+  userId           Int
+  user             User             @relation("SimulationStudent", fields: [userId], references: [id], onDelete: Cascade)
+  scenarioId       Int
+  scenario         AiScenario       @relation(fields: [scenarioId], references: [id], onDelete: Cascade)
+  status           SimulationStatus @default(ACTIVE)
+  provider         String           @db.VarChar(40)
+  model            String           @db.VarChar(80)
+  evaluation       Json?
+  evaluationStatus ReviewStatus     @default(PENDING)
+  reviewedById     Int?
+  reviewedBy       User?            @relation("SimulationReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+  reviewerNotes    String?          @db.Text
+  reviewedAt       DateTime?
+  interactions     AiInteraction[]
+  feedbacks        Feedback[]
+  startedAt        DateTime         @default(now())
+  endedAt          DateTime?
+
+  @@index([userId])
+  @@index([evaluationStatus])
+  @@map("ai_simulations")
+}
+
+enum AiKind {
+  SIMULATION
+  TUTOR
+  EVALUATION
+  RECOMMENDATION
+}
+
+model AiInteraction {
+  id           Int           @id @default(autoincrement())
+  userId       Int
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  simulationId Int?
+  simulation   AiSimulation? @relation(fields: [simulationId], references: [id], onDelete: Cascade)
+  courseId     Int?
+  course       Course?       @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  kind         AiKind
+  role         String        @db.VarChar(20) // user | assistant
+  content      String        @db.Text
+  tokensIn     Int?
+  tokensOut    Int?
+  createdAt    DateTime      @default(now())
+
+  @@index([simulationId, createdAt])
+  @@index([userId, kind])
+  @@map("ai_interactions")
+}
+
+// ───────────────────────── Portal público ─────────────────────────
+
+model Faq {
+  id          Int     @id @default(autoincrement())
+  question    String  @db.VarChar(300)
+  answer      String  @db.Text
+  order       Int     @default(0)
+  isPublished Boolean @default(true)
+
+  @@map("faqs")
+}
+
+model ContactMessage {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(150)
+  email     String   @db.VarChar(191)
+  phone     String?  @db.VarChar(30)
+  subject   String   @db.VarChar(200)
+  message   String   @db.Text
+  status    String   @default("NEW") @db.VarChar(20) // NEW | READ | ANSWERED
+  createdAt DateTime @default(now())
+
+  @@map("contact_messages")
+}

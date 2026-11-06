@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><title>CEHACIS · Alzado acotado</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1b2236;--or:#ee7a2f;--ord:#a8501a;--paper:#fff;--st:#f2f2f0;--st2:#e8e8e4;--gr:#4a4a4d}
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1440px;height:900px;overflow:hidden;position:relative;font-family:"Schibsted Grotesk",sans-serif;color:var(--ink);background-color:var(--paper);
+background-image:linear-gradient(var(--st2) 1px,transparent 1px),linear-gradient(90deg,var(--st2) 1px,transparent 1px);background-size:24px 24px;background-position:0 40px}
+header{position:absolute;top:0;left:0;width:1440px;height:64px;background:var(--paper);border-bottom:1px solid var(--ink);display:flex;align-items:center;padding:0 64px;z-index:5}
+.brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:20px;letter-spacing:.06em}
+nav{display:flex;gap:36px;margin-left:72px;font-size:15px;font-weight:600;color:var(--gr)}
+.r{margin-left:auto;display:flex;align-items:center;gap:28px;font-size:15px;font-weight:600}
+.btn{display:inline-flex;align-items:center;height:52px;padding:0 28px;border-radius:2px;font:700 16px "Schibsted Grotesk",sans-serif;border:1px solid var(--ink);color:var(--ink);background:var(--paper)}
+.btn.o{background:var(--or);border-color:var(--or)}
+header .btn{height:40px;padding:0 18px;font-size:14px}
+.copy{position:absolute;left:64px;top:128px;width:430px}
+h1{font-weight:800;font-size:64px;letter-spacing:-.035em;line-height:.98}
+h1 span{position:relative;display:inline-block}
+h1 svg{position:absolute;left:0;bottom:-14px;width:100%;height:16px}
+.copy p{margin-top:44px;color:var(--gr);font-size:18px;line-height:1.5;max-width:400px;background:var(--paper)}
+.cta{display:flex;gap:12px;margin-top:32px}
+.fig{position:absolute;left:600px;top:150px;width:600px;height:560px}
+svg.d{position:absolute;left:0;top:64px;width:1440px;height:836px;pointer-events:none}
+.lg{position:absolute;left:1118px;width:290px;font-weight:600;font-size:15px;line-height:1.4;background:var(--paper);padding:6px 8px;border-top:1px solid var(--ink)}
+.lg b{color:var(--ord);font-weight:800;margin-right:6px}
+.lg small{display:block;font-size:13px;font-weight:400;color:var(--gr)}
+.tb{position:absolute;right:32px;bottom:28px;width:330px;background:var(--paper);border:1px solid var(--ink);font-size:12px}
+.tb div{padding:7px 10px}.tb div+div{border-top:1px solid var(--ink);color:var(--gr);line-height:1.4}
+.tb b{font-weight:800;letter-spacing:.1em}
+.cota{position:absolute;left:600px;top:812px;width:600px;text-align:center;font-weight:600;font-size:13px;letter-spacing:.08em;color:var(--ink)}
+.cota span{background:var(--paper);padding:0 10px}
+</style></head><body>
+<header>
+<div class="brand"><svg width="36" height="34" viewBox="0 0 120 112" fill="#ee7a2f"><path d="M60 6L110 32H10Z"/><rect x="16" y="35" width="88" height="7"/><rect x="22" y="44" width="76" height="3"/><rect x="27" y="50" width="12" height="36"/><rect x="45" y="50" width="12" height="36"/><rect x="63" y="50" width="12" height="36"/><rect x="81" y="50" width="12" height="36"/><rect x="20" y="89" width="80" height="5"/><rect x="13" y="96" width="94" height="5"/><rect x="6" y="103" width="108" height="6"/></svg>CEHACIS</div>
+<nav><span>Cursos</span><span>Programas</span><span>Facilitadores</span><span>Nosotros</span><span>Contacto</span></nav>
+<div class="r"><span>Iniciar sesión</span><a class="btn o">Crear cuenta</a></div>
+</header>
+
+<svg class="d" viewBox="0 64 1440 836" fill="none" stroke="#1b2236" stroke-width="1">
+<!-- centerline + cotas -->
+<path d="M900 120V800" stroke-dasharray="10 4 2 4" stroke="#4a4a4d" opacity=".5"/>
+<!-- A pediment -->
+<path d="M1000 232H1118"/><path d="M1000 226v12M1118 226v12"/><circle cx="1000" cy="232" r="3" fill="#1b2236"/>
+<!-- B columns -->
+<path d="M1062 438H1118"/><circle cx="1062" cy="438" r="3" fill="#1b2236"/><path d="M1112 432l12 12"/>
+<path d="M1136 372V488M1130 372h12M1130 488h12"/>
+<!-- C base -->
+<path d="M1020 650H1118"/><circle cx="1020" cy="650" r="3" fill="#1b2236"/>
+<!-- left dimension: total height -->
+<path d="M560 172V716M552 172h16M552 716h16"/>
+<!-- bottom width dim -->
+<path d="M600 790H1200M600 782v16M1200 782v16"/>
+<path d="M595 795l10-10M1195 795l10-10"/>
+<!-- pediment width dim -->
+<path d="M600 160H1200M600 152v16M1200 152v16" opacity=".0"/>
+</svg>
+
+<div class="fig"><svg viewBox="0 0 120 112" width="600" height="560" preserveAspectRatio="xMidYMid meet" fill="#ee7a2f">
+<path d="M60 6L110 32H10Z"/><rect x="16" y="35" width="88" height="7"/><rect x="22" y="44" width="76" height="3"/>
+<rect x="27" y="50" width="12" height="36"/><rect x="45" y="50" width="12" height="36"/><rect x="63" y="50" width="12" height="36"/><rect x="81" y="50" width="12" height="36"/>
+<rect x="20" y="89" width="80" height="5"/><rect x="13" y="96" width="94" height="5"/><rect x="6" y="103" width="108" height="6"/>
+<g fill="#fff">
+<path d="M60 21c-3-4-6-2-5 1s3 2 5 1c2 1 4 2 5-1s-2-5-5-1zM59.4 18h1.2v7h-1.2z"/>
+<g id="w"><rect x="52.4" y="26.5" width="1.25" height="3" rx=".6"/><rect x="49.8" y="25" width="1.25" height="6" rx=".6"/><rect x="47.2" y="23" width="1.25" height="10" rx=".6"/><rect x="44.6" y="25" width="1.25" height="6" rx=".6"/><rect x="42" y="22" width="1.25" height="12" rx=".6"/><rect x="39.4" y="24" width="1.25" height="8" rx=".6"/></g>
+<use href="#w" transform="translate(120 0) scale(-1 1)"/>
+</g></svg></div>
+
+<div class="copy">
+<h1>Transformamos tu voz, tu presencia y tu capacidad de <span>conectar.<svg viewBox="0 0 200 16" preserveAspectRatio="none"><path d="M3 11C40 3 90 3 130 7s50 3 67-3" fill="none" stroke="#ee7a2f" stroke-width="5" stroke-linecap="round"/></svg></span></h1>
+<p>Entrenamiento online en habilidades comunicativas e inteligencia social, con práctica deliberada y seguimiento de tu progreso.</p>
+<div class="cta"><a class="btn o">Ver cursos →</a><a class="btn">Crear cuenta</a></div>
+</div>
+
+<div class="lg" style="top:196px"><b>A</b>Voz — Oratoria y presencia escénica</div>
+<div class="lg" style="top:340px;top:330px"><b>B</b>Cuatro cursos<small>N.º 01 Oratoria · N.º 02 Comunicación Asertiva · N.º 03 Resolución de Conflictos · N.º 04 Etiqueta y Urbanidad</small></div>
+<div class="lg" style="top:618px"><b>C</b>Método — práctica guiada, rúbricas y certificado verificable</div>
+<div class="cota"><span>Ciclo 2026 · Online</span></div>
+<div class="tb"><div><b>LÁMINA 01</b> · CEHACIS</div><div>Centro de Entrenamiento en Habilidades Comunicativas e Inteligencia Social</div></div>
+</body></html>

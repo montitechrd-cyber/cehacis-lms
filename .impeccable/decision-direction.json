@@ -1,0 +1,218 @@
+{
+  "title": "Mundo visual de CEHACIS",
+  "question": "Dirección asignada: Cartel de ciclo de conferencias universitario. Mantenerla, tomar una alternativa o volver a tirar.",
+  "options": [
+    {
+      "id": "assigned",
+      "label": "Cartel de ciclo de conferencias",
+      "kicker": "THE ROLL",
+      "lineage": "Carteles suizos de ciclos de conferencias universitarias (ETH, Kunstgewerbeschule, Yale School of Art)",
+      "thesis": "Cada curso se anuncia como una conferencia magistral numerada: rigor de retícula, campos de naranja institucional y tipografía grotesca de gran escala.",
+      "palette": [
+        "#EE7A2F",
+        "#141414",
+        "#4A4A4D",
+        "#F2F2F0",
+        "#FFFFFF"
+      ],
+      "materials": [
+        "retícula tipográfica estricta",
+        "campos de color plano a sangre",
+        "numeración de serie (N.º 01, 02…)"
+      ],
+      "viewport": "Portal: el campo naranja ocupa la mitad del primer viewport como un cartel; encima, en grotesca enorme, 'Transformamos tu voz'. Al lado, la 'cartelera' de cursos numerados con fecha, nivel y precio y el botón Inscribirme visible.",
+      "risk": "Si la escala tipográfica es tímida se queda en plantilla corporativa; exige titulares grandes y retícula disciplinada.",
+      "raised": [
+        {
+          "from": "challenger-step-row",
+          "raise": "El progreso del aula es una sola fila de pasos ininterrumpida con un indicador de 'ahora' que avanza: el estudiante siempre sabe dónde está."
+        },
+        {
+          "from": "challenger-jackfield",
+          "raise": "El estado (completado, en curso, bloqueado) se dibuja con forma de marca —relleno, anillo, trazo cortado—, nunca solo con color."
+        },
+        {
+          "from": "challenger-agit-train",
+          "raise": "El naranja se raciona a donde el visitante actúa: campos de cartel y acciones primarias, nunca decoración."
+        }
+      ]
+    },
+    {
+      "id": "model-pick",
+      "label": "Diploma y sello",
+      "kicker": "IMPECCABLE’S PICK",
+      "lineage": "Diplomas universitarios grabados con guilloché y sello en relieve",
+      "thesis": "La plataforma entera como un documento de acreditación: guilloché, sello naranja en relieve, capitulares romanas.",
+      "palette": [
+        "#FFFFFF",
+        "#1E1E20",
+        "#EE7A2F",
+        "#8A8A8E"
+      ],
+      "materials": [
+        "guilloché fino",
+        "sello en relieve",
+        "capitales romanas"
+      ],
+      "viewport": "Portal centrado como un diploma, el lema grabado y el sello de CEHACIS como insignia.",
+      "risk": "Es la dirección donde aterrizan casi todos los sitios 'de prestigio': familiar y algo solemne para el marketing."
+    },
+    {
+      "id": "challenger-step-row",
+      "label": "Fila de pasos de caja de ritmos",
+      "verdict": "declined",
+      "lineage": "Secuenciadores de los 80",
+      "palette": [
+        "#2A2A2C",
+        "#E5432F",
+        "#EE7A2F",
+        "#F2C230",
+        "#FFFFFF"
+      ],
+      "materials": [
+        "teclas de paso",
+        "LED"
+      ],
+      "thesis": "El curso como un patrón de 16 pasos que el alumno enciende.",
+      "viewport": "Fila de lecciones como teclas iluminadas.",
+      "risk": "Lúdico en exceso para una institución académica.",
+      "case": "Pierde en identificación y claridad para un público profesional.",
+      "kept": "La fila de progreso única con indicador de 'ahora'.",
+      "hero": "https://impeccable.style/worlds/cards/signals-instruments-drum-machine-step-row-hero.webp"
+    },
+    {
+      "id": "challenger-jackfield",
+      "label": "Panel de conexiones",
+      "verdict": "declined",
+      "lineage": "Patch bays de sala de máquinas",
+      "palette": [
+        "#0C0C0C",
+        "#F2A33A"
+      ],
+      "materials": [
+        "vidrio negro",
+        "líneas ámbar"
+      ],
+      "thesis": "Configuración como esquema de conexiones normalizadas.",
+      "viewport": "Carriles numerados sobre negro.",
+      "risk": "Frío y técnico; ajeno al mundo educativo.",
+      "case": "Pierde en ambos ejes.",
+      "kept": "Estado codificado por forma del trazo, no por color.",
+      "hero": "https://impeccable.style/worlds/cards/operate-b-normalled-jackfield-hero.webp"
+    },
+    {
+      "id": "challenger-agit-train",
+      "label": "Tren de agitación constructivista",
+      "verdict": "declined",
+      "lineage": "Carteles constructivistas",
+      "palette": [
+        "#EFE6D2",
+        "#151515",
+        "#C8322A"
+      ],
+      "materials": [
+        "estarcido",
+        "fotomontaje"
+      ],
+      "thesis": "Cuñas diagonales que empujan la acción.",
+      "viewport": "Cuña roja atravesando la página.",
+      "risk": "Carga política e histórica inadecuada.",
+      "case": "Pierde en identificación; tono militante.",
+      "kept": "Color racionado a la acción.",
+      "hero": "https://impeccable.style/worlds/cards/design-canon-constructivist-agit-train-hero.webp"
+    },
+    {
+      "id": "challenger-accretion",
+      "label": "Disco de acreción",
+      "verdict": "declined",
+      "lineage": "Astrofísica visual",
+      "palette": [
+        "#000000",
+        "#E8C26A",
+        "#C2412D"
+      ],
+      "materials": [
+        "shader",
+        "anillos"
+      ],
+      "thesis": "Umbral irreversible de luz.",
+      "viewport": "Horizonte negro con anillo dorado.",
+      "risk": "Sin relación con comunicación humana.",
+      "case": "Pierde en ambos ejes.",
+      "kept": "Compromiso total con un único foco.",
+      "hero": "https://impeccable.style/worlds/cards/galaxies-nebulae-deep-time-accretion-disk-threshold-hero.webp"
+    },
+    {
+      "id": "challenger-quilt",
+      "label": "Atlas de colcha",
+      "verdict": "declined",
+      "lineage": "Colchas de retazos",
+      "palette": [
+        "#7B93AE",
+        "#1A1A1A",
+        "#C23A2B"
+      ],
+      "materials": [
+        "retazos",
+        "costura"
+      ],
+      "thesis": "Historias cosidas por bloques.",
+      "viewport": "Colcha completa navegable.",
+      "risk": "Doméstico, no institucional.",
+      "case": "Pierde en ambos ejes.",
+      "kept": "Cada pieza conserva su procedencia visible.",
+      "hero": "https://impeccable.style/worlds/cards/textiles-weave-drape-fashion-memory-quilt-atlas-hero.webp"
+    },
+    {
+      "id": "challenger-lowbrow",
+      "label": "Panel lowbrow",
+      "verdict": "declined",
+      "lineage": "Arte lowbrow aerografiado",
+      "palette": [
+        "#E0342B",
+        "#1A1A1A",
+        "#33B2C9",
+        "#F5C431"
+      ],
+      "materials": [
+        "laca",
+        "contorno negro"
+      ],
+      "thesis": "Tableau abarrotado y lacado.",
+      "viewport": "Figuras compitiendo por espacio.",
+      "risk": "Contrario al minimalismo pedido.",
+      "case": "Pierde en ambos ejes.",
+      "kept": "Ninguna zona sin intención.",
+      "hero": "https://impeccable.style/worlds/cards/pop-culture-shelf-lowbrow-gallery-panel-hero.webp"
+    }
+  ],
+  "reroll": {
+    "registers": [
+      "safer",
+      "bolder"
+    ]
+  },
+  "canon": true,
+  "canonCard": {
+    "label": "El estándar de la categoría",
+    "thesis": "Un LMS/SaaS limpio como Coursera o Canvas, ejecutado con oficio.",
+    "palette": [
+      "#FFFFFF",
+      "#111827",
+      "#EE7A2F"
+    ],
+    "materials": [
+      "retícula limpia",
+      "tarjetas",
+      "fotografía de producto"
+    ],
+    "viewport": "Héroe con titular, subtítulo, botón y fila de tarjetas de cursos.",
+    "risk": "Indistinguible de la competencia por diseño."
+  },
+  "steer": true,
+  "seedKey": "1bf2c891",
+  "resolved": {
+    "chosen": "assigned",
+    "channel": "structured-question (decision page server exited without answer)"
+  }
+}

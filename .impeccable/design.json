@@ -1,0 +1,690 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-05T12:00:00+00:00",
+  "title": "Design System: CEHACIS",
+  "extensions": {
+    "colorMeta": {
+      "orange": {
+        "role": "primary",
+        "displayName": "Naranja institucional",
+        "canonical": "#ee7a2f",
+        "oklch": "oklch(70.1% 0.166 49)",
+        "tonalRamp": [
+          "oklch(15% 0.090 49)",
+          "oklch(26% 0.150 49)",
+          "oklch(37% 0.150 49)",
+          "oklch(48% 0.150 49)",
+          "oklch(59% 0.150 49)",
+          "oklch(70% 0.150 49)",
+          "oklch(82% 0.150 49)",
+          "oklch(95% 0.090 49)"
+        ]
+      },
+      "orange-hover": {
+        "role": "primary",
+        "displayName": "Naranja hover",
+        "canonical": "#f28c48",
+        "oklch": "oklch(74.5% 0.150 52)",
+        "tonalRamp": [
+          "oklch(15% 0.090 52)",
+          "oklch(26% 0.150 52)",
+          "oklch(37% 0.150 52)",
+          "oklch(48% 0.150 52)",
+          "oklch(59% 0.150 52)",
+          "oklch(70% 0.150 52)",
+          "oklch(82% 0.150 52)",
+          "oklch(95% 0.090 52)"
+        ]
+      },
+      "orange-soft": {
+        "role": "primary",
+        "displayName": "Naranja suave",
+        "canonical": "#fbe3d2",
+        "oklch": "oklch(93.1% 0.035 58)",
+        "tonalRamp": [
+          "oklch(15% 0.021 58)",
+          "oklch(26% 0.035 58)",
+          "oklch(37% 0.035 58)",
+          "oklch(48% 0.035 58)",
+          "oklch(59% 0.035 58)",
+          "oklch(70% 0.035 58)",
+          "oklch(82% 0.035 58)",
+          "oklch(95% 0.021 58)"
+        ]
+      },
+      "orange-deep": {
+        "role": "primary",
+        "displayName": "Naranja profundo",
+        "canonical": "#a8501a",
+        "oklch": "oklch(53.3% 0.132 48)",
+        "tonalRamp": [
+          "oklch(15% 0.079 48)",
+          "oklch(26% 0.132 48)",
+          "oklch(37% 0.132 48)",
+          "oklch(48% 0.132 48)",
+          "oklch(59% 0.132 48)",
+          "oklch(70% 0.132 48)",
+          "oklch(82% 0.132 48)",
+          "oklch(95% 0.079 48)"
+        ]
+      },
+      "orange-strong": {
+        "role": "primary",
+        "displayName": "Naranja fuerte",
+        "canonical": "#c25414",
+        "oklch": "oklch(57.9% 0.157 45)",
+        "tonalRamp": [
+          "oklch(15% 0.094 45)",
+          "oklch(26% 0.157 45)",
+          "oklch(37% 0.157 45)",
+          "oklch(48% 0.157 45)",
+          "oklch(59% 0.157 45)",
+          "oklch(70% 0.157 45)",
+          "oklch(82% 0.157 45)",
+          "oklch(95% 0.094 45)"
+        ]
+      },
+      "orange-tint": {
+        "role": "primary",
+        "displayName": "Tinte naranja (home)",
+        "canonical": "#fdf3eb",
+        "oklch": "oklch(97.0% 0.015 61)",
+        "tonalRamp": [
+          "oklch(15% 0.009 61)",
+          "oklch(26% 0.015 61)",
+          "oklch(37% 0.015 61)",
+          "oklch(48% 0.015 61)",
+          "oklch(59% 0.015 61)",
+          "oklch(70% 0.015 61)",
+          "oklch(82% 0.015 61)",
+          "oklch(95% 0.009 61)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Tinta azul marino",
+        "canonical": "#1b2236",
+        "oklch": "oklch(25.5% 0.039 269)",
+        "tonalRamp": [
+          "oklch(15% 0.023 269)",
+          "oklch(26% 0.039 269)",
+          "oklch(37% 0.039 269)",
+          "oklch(48% 0.039 269)",
+          "oklch(59% 0.039 269)",
+          "oklch(70% 0.039 269)",
+          "oklch(82% 0.039 269)",
+          "oklch(95% 0.023 269)"
+        ]
+      },
+      "charcoal": {
+        "role": "neutral",
+        "displayName": "Carbón del portal",
+        "canonical": "#1f1f22",
+        "oklch": "oklch(24.1% 0.006 286)",
+        "tonalRamp": [
+          "oklch(15% 0.003 286)",
+          "oklch(26% 0.006 286)",
+          "oklch(37% 0.006 286)",
+          "oklch(48% 0.006 286)",
+          "oklch(59% 0.006 286)",
+          "oklch(70% 0.006 286)",
+          "oklch(82% 0.006 286)",
+          "oklch(95% 0.003 286)"
+        ]
+      },
+      "graphite": {
+        "role": "neutral",
+        "displayName": "Grafito del logo",
+        "canonical": "#4a4a4d",
+        "oklch": "oklch(41.0% 0.005 286)",
+        "tonalRamp": [
+          "oklch(15% 0.003 286)",
+          "oklch(26% 0.005 286)",
+          "oklch(37% 0.005 286)",
+          "oklch(48% 0.005 286)",
+          "oklch(59% 0.005 286)",
+          "oklch(70% 0.005 286)",
+          "oklch(82% 0.005 286)",
+          "oklch(95% 0.003 286)"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Gris apagado",
+        "canonical": "#616165",
+        "oklch": "oklch(49.4% 0.006 286)",
+        "tonalRamp": [
+          "oklch(15% 0.004 286)",
+          "oklch(26% 0.006 286)",
+          "oklch(37% 0.006 286)",
+          "oklch(48% 0.006 286)",
+          "oklch(59% 0.006 286)",
+          "oklch(70% 0.006 286)",
+          "oklch(82% 0.006 286)",
+          "oklch(95% 0.004 286)"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Papel",
+        "canonical": "#ffffff",
+        "oklch": "oklch(100.0% 0.000 90)",
+        "tonalRamp": [
+          "oklch(15% 0.000 90)",
+          "oklch(26% 0.000 90)",
+          "oklch(37% 0.000 90)",
+          "oklch(48% 0.000 90)",
+          "oklch(59% 0.000 90)",
+          "oklch(70% 0.000 90)",
+          "oklch(82% 0.000 90)",
+          "oklch(95% 0.000 90)"
+        ]
+      },
+      "stone": {
+        "role": "neutral",
+        "displayName": "Piedra",
+        "canonical": "#f2f2f0",
+        "oklch": "oklch(96.1% 0.003 106)",
+        "tonalRamp": [
+          "oklch(15% 0.002 106)",
+          "oklch(26% 0.003 106)",
+          "oklch(37% 0.003 106)",
+          "oklch(48% 0.003 106)",
+          "oklch(59% 0.003 106)",
+          "oklch(70% 0.003 106)",
+          "oklch(82% 0.003 106)",
+          "oklch(95% 0.002 106)"
+        ]
+      },
+      "stone-2": {
+        "role": "neutral",
+        "displayName": "Piedra 2",
+        "canonical": "#e8e8e4",
+        "oklch": "oklch(93.0% 0.005 107)",
+        "tonalRamp": [
+          "oklch(15% 0.003 107)",
+          "oklch(26% 0.005 107)",
+          "oklch(37% 0.005 107)",
+          "oklch(48% 0.005 107)",
+          "oklch(59% 0.005 107)",
+          "oklch(70% 0.005 107)",
+          "oklch(82% 0.005 107)",
+          "oklch(95% 0.003 107)"
+        ]
+      },
+      "sand": {
+        "role": "neutral",
+        "displayName": "Arena (home)",
+        "canonical": "#f6f4f1",
+        "oklch": "oklch(96.8% 0.005 78)",
+        "tonalRamp": [
+          "oklch(15% 0.003 78)",
+          "oklch(26% 0.005 78)",
+          "oklch(37% 0.005 78)",
+          "oklch(48% 0.005 78)",
+          "oklch(59% 0.005 78)",
+          "oklch(70% 0.005 78)",
+          "oklch(82% 0.005 78)",
+          "oklch(95% 0.003 78)"
+        ]
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Hairline (home)",
+        "canonical": "#e4e2dd",
+        "oklch": "oklch(91.3% 0.007 89)",
+        "tonalRamp": [
+          "oklch(15% 0.004 89)",
+          "oklch(26% 0.007 89)",
+          "oklch(37% 0.007 89)",
+          "oklch(48% 0.007 89)",
+          "oklch(59% 0.007 89)",
+          "oklch(70% 0.007 89)",
+          "oklch(82% 0.007 89)",
+          "oklch(95% 0.004 89)"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Regla clara",
+        "canonical": "#d9d9d4",
+        "oklch": "oklch(88.4% 0.007 107)",
+        "tonalRamp": [
+          "oklch(15% 0.004 107)",
+          "oklch(26% 0.007 107)",
+          "oklch(37% 0.007 107)",
+          "oklch(48% 0.007 107)",
+          "oklch(59% 0.007 107)",
+          "oklch(70% 0.007 107)",
+          "oklch(82% 0.007 107)",
+          "oklch(95% 0.004 107)"
+        ]
+      },
+      "line-strong": {
+        "role": "neutral",
+        "displayName": "Regla fuerte",
+        "canonical": "#b9b9b3",
+        "oklch": "oklch(78.4% 0.008 107)",
+        "tonalRamp": [
+          "oklch(15% 0.005 107)",
+          "oklch(26% 0.008 107)",
+          "oklch(37% 0.008 107)",
+          "oklch(48% 0.008 107)",
+          "oklch(59% 0.008 107)",
+          "oklch(70% 0.008 107)",
+          "oklch(82% 0.008 107)",
+          "oklch(95% 0.005 107)"
+        ]
+      },
+      "success": {
+        "role": "semantic",
+        "displayName": "Éxito",
+        "canonical": "#1f7a4d",
+        "oklch": "oklch(51.5% 0.110 157)",
+        "tonalRamp": [
+          "oklch(15% 0.066 157)",
+          "oklch(26% 0.110 157)",
+          "oklch(37% 0.110 157)",
+          "oklch(48% 0.110 157)",
+          "oklch(59% 0.110 157)",
+          "oklch(70% 0.110 157)",
+          "oklch(82% 0.110 157)",
+          "oklch(95% 0.066 157)"
+        ]
+      },
+      "danger": {
+        "role": "semantic",
+        "displayName": "Peligro",
+        "canonical": "#b42318",
+        "oklch": "oklch(50.0% 0.182 30)",
+        "tonalRamp": [
+          "oklch(15% 0.090 30)",
+          "oklch(26% 0.150 30)",
+          "oklch(37% 0.150 30)",
+          "oklch(48% 0.150 30)",
+          "oklch(59% 0.150 30)",
+          "oklch(70% 0.150 30)",
+          "oklch(82% 0.150 30)",
+          "oklch(95% 0.090 30)"
+        ]
+      },
+      "danger-soft": {
+        "role": "semantic",
+        "displayName": "Peligro suave",
+        "canonical": "#fbe5e3",
+        "oklch": "oklch(93.9% 0.024 24)",
+        "tonalRamp": [
+          "oklch(15% 0.015 24)",
+          "oklch(26% 0.024 24)",
+          "oklch(37% 0.024 24)",
+          "oklch(48% 0.024 24)",
+          "oklch(59% 0.024 24)",
+          "oklch(70% 0.024 24)",
+          "oklch(82% 0.024 24)",
+          "oklch(95% 0.015 24)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "hero": {
+        "displayName": "Hero",
+        "purpose": "Titular de cartel del portal fuera de la home."
+      },
+      "home-hero": {
+        "displayName": "Home: héroe",
+        "purpose": "Titular único de la home, en 6 columnas."
+      },
+      "home-section": {
+        "displayName": "Home: sección",
+        "purpose": "Títulos de sección de la home, seguidos de entradilla de 1.125rem en grafito."
+      },
+      "home-closing": {
+        "displayName": "Home: cierre",
+        "purpose": "Titular del cierre de la home."
+      },
+      "display": {
+        "displayName": "Display",
+        "purpose": "Cabecera de página interior y banda de certificación."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Títulos de sección del portal (columna 4), títulos de acceso y de página del campus."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Términos, filas de método, estados vacíos, precios."
+      },
+      "lesson-h2": {
+        "displayName": "Lección h2",
+        "purpose": "Subtítulo de segundo nivel en el contenido de lección."
+      },
+      "lesson-h3": {
+        "displayName": "Lección h3",
+        "purpose": "Subtítulo de tercer nivel en el contenido de lección."
+      },
+      "body-lead": {
+        "displayName": "Body lead",
+        "purpose": "Descripciones largas sin HTML (ficha de curso, FAQ)."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Texto de interfaz."
+      },
+      "body-lesson": {
+        "displayName": "Body lección",
+        "purpose": "Contenido de lección, interlineado 1.7, medida 70ch."
+      },
+      "body-ui": {
+        "displayName": "Body UI",
+        "purpose": "Paso 0.9375rem: campos, mensajes, foro, comentarios, opciones de evaluación, descripción de página."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Paso 0.8125rem: etiquetas de campo, botones pequeños, datos de apoyo."
+      },
+      "label-caps": {
+        "displayName": "Label en versales",
+        "purpose": "Encabezados de tabla y columnas del pie."
+      },
+      "tag": {
+        "displayName": "Etiqueta",
+        "purpose": "Paso 0.6875rem: etiquetas de estado, grupos de barra lateral, rol, eventos de calendario, claves técnicas, contadores."
+      },
+      "micro": {
+        "displayName": "Micro",
+        "purpose": "Paso 0.625rem: solo números de contadores de notificación y la línea descriptiva del BrandMark; nunca frases de lectura."
+      },
+      "serial": {
+        "displayName": "Serie",
+        "purpose": "Número N.º 01 tabular de cursos, módulos y pasos."
+      }
+    },
+    "shadows": [
+      {
+        "name": "none",
+        "value": "none",
+        "purpose": "Campus, panel y portal fuera de la home: ningún elemento proyecta sombra; la profundidad sale de reglas y tono."
+      },
+      {
+        "name": "shadow-lift",
+        "value": "0 1px 2px rgba(31,31,34,0.06), 0 12px 32px -12px rgba(31,31,34,0.18)",
+        "purpose": "Solo home: hover de la tarjeta de curso. Nunca en reposo."
+      },
+      {
+        "name": "shadow-float",
+        "value": "0 2px 4px rgba(31,31,34,0.06), 0 24px 48px -20px rgba(31,31,34,0.28)",
+        "purpose": "Solo home: paneles flotantes que representan una pantalla o un documento (vista previa del aula y su ficha, aula de ejemplo, certificado de muestra)."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out-quint",
+        "value": "cubic-bezier(0.22, 1, 0.36, 1)",
+        "purpose": "Entradas de contenido y fundidos."
+      },
+      {
+        "name": "ease-out-expo",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Panel lateral y barrido del indicador 'ahora'."
+      },
+      {
+        "name": "rise",
+        "value": "520ms ease-out-quint; translateY(14px) a 0 con fundido",
+        "purpose": "Entrada escalonada de filas y bloques (60ms por fila, máx. 8)."
+      },
+      {
+        "name": "fade",
+        "value": "320ms ease-out-quint",
+        "purpose": "Velos y menú móvil."
+      },
+      {
+        "name": "slide-in",
+        "value": "360ms ease-out-expo; translateX(24px)",
+        "purpose": "Panel lateral."
+      },
+      {
+        "name": "control-state",
+        "value": "150ms ease-out",
+        "purpose": "Hover y pulsación de botones (translateY 1px al activar)."
+      },
+      {
+        "name": "now-sweep",
+        "value": "700ms ease-out-expo",
+        "purpose": "Desplazamiento del indicador 'ahora' y llenado de la regla de progreso."
+      },
+      {
+        "name": "voice",
+        "value": "1.1s ease-in-out infinite; scaleY 0.45 a 1, desfase 110ms por barra",
+        "purpose": "Ondas de voz animadas: carga de página e IA escribiendo."
+      },
+      {
+        "name": "grow",
+        "value": "700ms ease-out-expo; scaleX(0) a 1 desde la izquierda",
+        "purpose": "Solo home: la vista previa del aula se arma al cargar (progreso desde 150ms; rúbrica desde 350ms, 140ms por criterio y 70ms por barra). Con movimiento reducido, llenas."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "1ms",
+        "purpose": "prefers-reduced-motion anula animaciones y transiciones."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      },
+      {
+        "name": "xl",
+        "value": "1280px"
+      },
+      {
+        "name": "container",
+        "value": "1440px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Botón primario",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Campo naranja con tinta; solo para la acción principal de la vista.",
+      "html": "<button class=\"ds-btn ds-btn-primary\">Inscribirme</button>",
+      "css": ".ds-btn { font-family: var(--font-sans, 'Schibsted Grotesk Variable', 'Helvetica Neue', Arial, sans-serif); display:inline-flex; align-items:center; justify-content:center; gap:8px; height:40px; padding:0 16px; font-size:14px; font-weight:600; border-radius:2px; border:1px solid; cursor:pointer; transition: background-color 150ms ease-out, color 150ms ease-out, border-color 150ms ease-out, transform 150ms ease-out; } .ds-btn:active { transform: translateY(1px); } .ds-btn:focus-visible { outline:2px solid #1b2236; outline-offset:2px; } .ds-btn-primary { background:#ee7a2f; color:#1b2236; border-color:#ee7a2f; } .ds-btn-primary:hover { background:#f28c48; }"
+    },
+    {
+      "name": "Botón de tinta",
+      "kind": "button",
+      "refersTo": "button-ink",
+      "description": "Botón por defecto del campus y del panel.",
+      "html": "<button class=\"ds-btn ds-btn-ink\">Guardar cambios</button>",
+      "css": ".ds-btn { font-family: var(--font-sans, 'Schibsted Grotesk Variable', 'Helvetica Neue', Arial, sans-serif); display:inline-flex; align-items:center; justify-content:center; gap:8px; height:40px; padding:0 16px; font-size:14px; font-weight:600; border-radius:2px; border:1px solid; cursor:pointer; transition: background-color 150ms ease-out, color 150ms ease-out, border-color 150ms ease-out, transform 150ms ease-out; } .ds-btn:active { transform: translateY(1px); } .ds-btn:focus-visible { outline:2px solid #1b2236; outline-offset:2px; } .ds-btn-ink { background:#1b2236; color:#ffffff; border-color:#1b2236; } .ds-btn-ink:hover { background:#4a4a4d; border-color:#4a4a4d; }"
+    },
+    {
+      "name": "Botón contorno",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Acción secundaria; se invierte a tinta en hover.",
+      "html": "<button class=\"ds-btn ds-btn-outline\">Iniciar sesión</button>",
+      "css": ".ds-btn { font-family: var(--font-sans, 'Schibsted Grotesk Variable', 'Helvetica Neue', Arial, sans-serif); display:inline-flex; align-items:center; justify-content:center; gap:8px; height:40px; padding:0 16px; font-size:14px; font-weight:600; border-radius:2px; border:1px solid; cursor:pointer; transition: background-color 150ms ease-out, color 150ms ease-out, border-color 150ms ease-out, transform 150ms ease-out; } .ds-btn:active { transform: translateY(1px); } .ds-btn:focus-visible { outline:2px solid #1b2236; outline-offset:2px; } .ds-btn-outline { background:#ffffff; color:#1b2236; border-color:#1b2236; } .ds-btn-outline:hover { background:#1b2236; color:#ffffff; }"
+    },
+    {
+      "name": "Campo de texto",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Etiqueta encima, borde de regla fuerte, foco con anillo de tinta.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">Correo electrónico <span class=\"ds-req\">*</span></span><input class=\"ds-input\" placeholder=\"tu@correo.com\"><span class=\"ds-field-hint\">Te enviaremos la confirmación.</span></label>",
+      "css": ".ds-field { font-family: var(--font-sans, 'Schibsted Grotesk Variable', 'Helvetica Neue', Arial, sans-serif); display:flex; flex-direction:column; gap:6px; max-width:320px; } .ds-field-label { font-size:13px; font-weight:600; color:#1b2236; } .ds-req { color:#a8501a; } .ds-input { font:inherit; height:40px; padding:0 12px; font-size:15px; color:#1b2236; background:#ffffff; border:1px solid #b9b9b3; border-radius:2px; caret-color:#a8501a; transition:border-color 150ms; } .ds-input::placeholder { color:#616165; } .ds-input:hover { border-color:#4a4a4d; } .ds-input:focus { outline:none; border-color:#1b2236; box-shadow:0 0 0 1px #1b2236; } .ds-field-hint { font-size:12px; color:#616165; }"
+    },
+    {
+      "name": "Navegación del portal",
+      "kind": "nav",
+      "refersTo": "nav",
+      "description": "Cabecera de una línea con regla de tinta; activo con subrayado naranja.",
+      "html": "<nav class=\"ds-nav\"><strong class=\"ds-nav-brand\">CEHACIS</strong><a class=\"ds-nav-link is-active\" href=\"#\">Cursos</a><a class=\"ds-nav-link\" href=\"#\">Programas</a><a class=\"ds-nav-link\" href=\"#\">Facilitadores</a><a class=\"ds-nav-link\" href=\"#\">Contacto</a></nav>",
+      "css": ".ds-nav { font-family: var(--font-sans, 'Schibsted Grotesk Variable', 'Helvetica Neue', Arial, sans-serif); display:flex; align-items:center; gap:28px; height:64px; padding:0 32px; background:#ffffff; border-bottom:1px solid #1b2236; } .ds-nav-brand { font-weight:800; letter-spacing:-0.02em; margin-right:auto; } .ds-nav-link { font-size:14px; font-weight:600; color:#4a4a4d; text-decoration:none; } .ds-nav-link:hover { color:#1b2236; } .ds-nav-link.is-active { color:#1b2236; text-decoration:underline; text-decoration-color:#ee7a2f; text-decoration-thickness:2px; text-underline-offset:6px; } .ds-nav-link:focus-visible { outline:2px solid #1b2236; outline-offset:2px; }"
+    },
+    {
+      "name": "Etiquetas de estado",
+      "kind": "chip",
+      "refersTo": "tag",
+      "description": "Etiquetas de estado codificadas por forma: cuadro relleno, vacío, trazo cortado y tachado; el rojo solo para peligro.",
+      "html": "<div class=\"ds-tags\"><span class=\"ds-tag ds-tag-ok\"><svg width=\"8\" height=\"8\" viewBox=\"0 0 8 8\" aria-hidden=\"true\"><rect width=\"8\" height=\"8\" fill=\"currentColor\"/></svg>Publicado</span><span class=\"ds-tag ds-tag-warn\"><svg width=\"8\" height=\"8\" viewBox=\"0 0 8 8\" aria-hidden=\"true\"><rect x=\".75\" y=\".75\" width=\"6.5\" height=\"6.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"/></svg>Pendiente</span><span class=\"ds-tag ds-tag-info\"><svg width=\"8\" height=\"8\" viewBox=\"0 0 8 8\" aria-hidden=\"true\"><rect x=\".75\" y=\".75\" width=\"6.5\" height=\"6.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-dasharray=\"2 1.5\"/></svg>En desarrollo</span><span class=\"ds-tag ds-tag-danger\"><svg width=\"8\" height=\"8\" viewBox=\"0 0 8 8\" aria-hidden=\"true\"><rect x=\".75\" y=\".75\" width=\"6.5\" height=\"6.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"/><path d=\"M1 7L7 1\" stroke=\"currentColor\" stroke-width=\"1.5\"/></svg>Revocado</span><span class=\"ds-tag ds-tag-ink\">Intermedio</span><span class=\"ds-tag ds-tag-orange\">Nuevo</span></div>",
+      "css": ".ds-tags { font-family: var(--font-sans, 'Schibsted Grotesk Variable', 'Helvetica Neue', Arial, sans-serif); display:flex; gap:8px; flex-wrap:wrap; } .ds-tag { display:inline-flex; align-items:center; gap:6px; padding:2px 6px; border-radius:1px; font-size:11px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; white-space:nowrap; border:1px solid transparent; } .ds-tag-ok, .ds-tag-warn { border-color:#1b2236; color:#1b2236; } .ds-tag-info { border:1px dashed #4a4a4d; color:#4a4a4d; } .ds-tag-danger { border-color:#b42318; color:#b42318; } .ds-tag-ink { background:#1b2236; color:#fff; } .ds-tag-orange { background:#ee7a2f; color:#1b2236; }"
+    },
+    {
+      "name": "Cartelera",
+      "kind": "custom",
+      "refersTo": "cartel-field",
+      "description": "La cartelera como templo del campo de cartel y como lista N.º sobre papel en el catálogo. La home no la usa.",
+      "html": "<aside class=\"ds-cartel\"><svg class=\"ds-ped\" viewBox=\"0 0 400 60\" preserveAspectRatio=\"none\" aria-hidden=\"true\"><path d=\"M200 0 L400 60 H0 Z\" fill=\"currentColor\"/></svg><div class=\"ds-ent\"></div><div class=\"ds-cartel-body\"><div class=\"ds-col\" aria-hidden=\"true\"><span></span><span></span><span></span><span></span></div><h2>Cartelera del ciclo</h2><ol><li><span class=\"ds-serial\">N.º 01</span><div><a href=\"#\">Oratoria con presencia</a><p>Intermedio — USD 120</p></div><button class=\"ds-cartel-btn\">Inscribirme</button></li><li><span class=\"ds-serial\">N.º 02</span><div><a href=\"#\">Voz y dicción</a><p>Inicial — USD 95</p></div><button class=\"ds-cartel-btn\">Inscribirme</button></li></ol></div><svg class=\"ds-base\" viewBox=\"0 0 400 24\" preserveAspectRatio=\"none\" aria-hidden=\"true\"><rect x=\"40\" y=\"0\" width=\"320\" height=\"6\" fill=\"currentColor\"/><rect x=\"20\" y=\"9\" width=\"360\" height=\"6\" fill=\"currentColor\"/><rect x=\"0\" y=\"18\" width=\"400\" height=\"6\" fill=\"currentColor\"/></svg></aside>",
+      "css": ".ds-cartel { font-family: var(--font-sans, 'Schibsted Grotesk Variable', 'Helvetica Neue', Arial, sans-serif); background:#ee7a2f; color:#1b2236; max-width:520px; display:flex; flex-direction:column; overflow:hidden; } .ds-ped { display:block; width:100%; height:72px; } .ds-ent { height:12px; background:#1b2236; } .ds-base { display:block; width:100%; height:24px; } .ds-cartel-body { position:relative; isolation:isolate; padding:40px; } .ds-col { position:absolute; inset:0; z-index:-1; display:grid; grid-template-columns:repeat(4,1fr); gap:13%; padding:0 13%; opacity:0.045; } .ds-col span { background:#1b2236; } .ds-cartel h2 { margin:0 0 16px; font-size:24px; font-weight:800; letter-spacing:-0.025em; } .ds-cartel ol { list-style:none; margin:0; padding:0; } .ds-cartel li { display:grid; grid-template-columns:auto 1fr auto; gap:16px; align-items:center; border-top:1px solid #1b2236; padding:16px 0; } .ds-serial { font-size:14px; font-weight:700; font-variant-numeric:tabular-nums; } .ds-cartel a { font-size:18px; font-weight:700; letter-spacing:-0.025em; color:#1b2236; text-decoration:none; } .ds-cartel a:hover { text-decoration:underline; } .ds-cartel p { margin:2px 0 0; font-size:14px; font-variant-numeric:tabular-nums; } .ds-cartel-btn { font:inherit; font-size:13px; font-weight:600; height:32px; padding:0 12px; background:#1b2236; color:#fff; border:1px solid #1b2236; border-radius:2px; cursor:pointer; } .ds-cartel-btn:hover { background:#4a4a4d; } .ds-cartel-btn:focus-visible { outline:2px solid #1b2236; outline-offset:2px; }"
+    },
+    {
+      "name": "Fila de pasos",
+      "kind": "custom",
+      "refersTo": "step-row",
+      "description": "Segmentos de lección codificados por forma; actual con anillo de tinta; indicador 'ahora' naranja sobre papel y de tinta sobre naranja.",
+      "html": "<div class=\"ds-steps\"><ol><li class=\"done\"></li><li class=\"done\"></li><li class=\"now\"></li><li class=\"open\"></li><li class=\"started\"></li><li class=\"locked\"></li></ol><span class=\"ds-now\" style=\"left:calc(41.66% - 1.5px)\"></span></div><div class=\"ds-steps-orange\"><div class=\"ds-steps\"><ol><li class=\"done\"></li><li class=\"now\"></li><li class=\"open\"></li><li class=\"open\"></li></ol><span class=\"ds-now ds-now-ink\" style=\"left:calc(37.5% - 1.5px)\"></span></div></div>",
+      "css": ".ds-steps { position:relative; width:420px; padding-top:6px; } .ds-steps ol { display:flex; gap:3px; height:14px; margin:0; padding:0; list-style:none; } .ds-steps li { flex:1; transition:background-color 150ms; } .ds-steps .done { background:#1b2236; } .ds-steps .started { background:#4a4a4d; } .ds-steps .now { background:#fff; box-shadow: inset 0 0 0 1.5px #1b2236; } .ds-steps .open { background:#e8e8e4; } .ds-steps .open:hover { background:#b9b9b3; } .ds-steps .locked { background:repeating-linear-gradient(90deg,#b9b9b3 0 4px,transparent 4px 7px); } .ds-now { position:absolute; top:0; width:3px; height:22px; background:#ee7a2f; transition:left 700ms cubic-bezier(0.16,1,0.3,1); } .ds-steps-orange { margin-top:24px; background:#ee7a2f; padding:28px 32px; width:fit-content; } .ds-now-ink { top:-4px; height:30px; background:#1b2236; }"
+    },
+    {
+      "name": "Libro de registro",
+      "kind": "card",
+      "refersTo": "ledger",
+      "description": "Cifras clave entre reglas verticales, en lugar de tarjetas de métricas.",
+      "html": "<dl class=\"ds-ledger\"><div><dt>Inscripciones</dt><dd>1.284</dd></div><div><dt>Completados</dt><dd>62%</dd></div><div><dt>Ingresos</dt><dd>USD 18.420</dd></div></dl>",
+      "css": ".ds-ledger { font-family: var(--font-sans, 'Schibsted Grotesk Variable', 'Helvetica Neue', Arial, sans-serif); display:grid; grid-template-columns:repeat(3,minmax(140px,1fr)); margin:0; border-top:1px solid #1b2236; } .ds-ledger div { padding:16px; border-bottom:1px solid #d9d9d4; border-right:1px solid #d9d9d4; } .ds-ledger div:first-child { padding-left:0; } .ds-ledger div:last-child { border-right:0; } .ds-ledger dt { font-size:12px; font-weight:600; color:#4a4a4d; } .ds-ledger dd { margin:4px 0 0; font-size:28px; font-weight:700; line-height:1; letter-spacing:-0.025em; font-variant-numeric:tabular-nums; color:#1b2236; }"
+    },
+    {
+      "name": "Emblema del templo",
+      "kind": "custom",
+      "refersTo": "temple-emblem",
+      "description": "El templo del logo en vector: relleno como marca y sello, en línea como marca de agua; mariposa como logro.",
+      "html": "<div class=\"ds-emb\"><span class=\"ds-emb-solid\"><svg viewBox=\"0 0 120 112\" aria-hidden=\"true\"><path d=\"M60 6 L110 32 H10 Z\" fill=\"currentColor\"/><g transform=\"translate(60 21)\" fill=\"#ffffff\"><path d=\"M-.6-3.6C-2.6-6.6-7.2-7.4-8-5.2c-.8 2.2 1.6 5 6.8 5.6z\"/><path d=\"M.6-3.6C2.6-6.6 7.2-7.4 8-5.2c.8 2.2-1.6 5-6.8 5.6z\"/><path d=\"M-1.2 1C-4.4 1.2-6.4 3.4-5.4 5.2c1 1.6 3.6.6 4.6-2.4z\"/><path d=\"M1.2 1C4.4 1.2 6.4 3.4 5.4 5.2c-1 1.6-3.6.6-4.6-2.4z\"/><rect x=\"-.55\" y=\"-4.6\" width=\"1.1\" height=\"10\" rx=\".5\"/></g><rect x=\"47.75\" y=\"20.5\" width=\"1.25\" height=\"3\" rx=\".625\" fill=\"#ffffff\"/><rect x=\"45.15\" y=\"19.0\" width=\"1.25\" height=\"6\" rx=\".625\" fill=\"#ffffff\"/><rect x=\"42.55\" y=\"17.0\" width=\"1.25\" height=\"10\" rx=\".625\" fill=\"#ffffff\"/><rect x=\"39.95\" y=\"19.0\" width=\"1.25\" height=\"6\" rx=\".625\" fill=\"#ffffff\"/><rect x=\"37.35\" y=\"16.0\" width=\"1.25\" height=\"12\" rx=\".625\" fill=\"#ffffff\"/><rect x=\"34.75\" y=\"18.0\" width=\"1.25\" height=\"8\" rx=\".625\" fill=\"#ffffff\"/><rect x=\"71.00\" y=\"20.5\" width=\"1.25\" height=\"3\" rx=\".625\" fill=\"#ffffff\"/><rect x=\"73.60\" y=\"19.0\" width=\"1.25\" height=\"6\" rx=\".625\" fill=\"#ffffff\"/><rect x=\"76.20\" y=\"17.0\" width=\"1.25\" height=\"10\" rx=\".625\" fill=\"#ffffff\"/><rect x=\"78.80\" y=\"19.0\" width=\"1.25\" height=\"6\" rx=\".625\" fill=\"#ffffff\"/><rect x=\"81.40\" y=\"16.0\" width=\"1.25\" height=\"12\" rx=\".625\" fill=\"#ffffff\"/><rect x=\"84.00\" y=\"18.0\" width=\"1.25\" height=\"8\" rx=\".625\" fill=\"#ffffff\"/><rect x=\"16\" y=\"35\" width=\"88\" height=\"7\" fill=\"currentColor\"/><rect x=\"22\" y=\"44\" width=\"76\" height=\"3\" fill=\"currentColor\"/><rect x=\"27\" y=\"50\" width=\"12\" height=\"36\" fill=\"currentColor\"/><rect x=\"45\" y=\"50\" width=\"12\" height=\"36\" fill=\"currentColor\"/><rect x=\"63\" y=\"50\" width=\"12\" height=\"36\" fill=\"currentColor\"/><rect x=\"81\" y=\"50\" width=\"12\" height=\"36\" fill=\"currentColor\"/><rect x=\"20\" y=\"89\" width=\"80\" height=\"5\" fill=\"currentColor\"/><rect x=\"13\" y=\"96\" width=\"94\" height=\"5\" fill=\"currentColor\"/><rect x=\"6\" y=\"103\" width=\"108\" height=\"6\" fill=\"currentColor\"/></svg></span><span class=\"ds-emb-seal\"><svg viewBox=\"0 0 120 112\" aria-hidden=\"true\"><path d=\"M60 6 L110 32 H10 Z\" fill=\"currentColor\"/><g transform=\"translate(60 21)\" fill=\"#1b2236\"><path d=\"M-.6-3.6C-2.6-6.6-7.2-7.4-8-5.2c-.8 2.2 1.6 5 6.8 5.6z\"/><path d=\"M.6-3.6C2.6-6.6 7.2-7.4 8-5.2c.8 2.2-1.6 5-6.8 5.6z\"/><path d=\"M-1.2 1C-4.4 1.2-6.4 3.4-5.4 5.2c1 1.6 3.6.6 4.6-2.4z\"/><path d=\"M1.2 1C4.4 1.2 6.4 3.4 5.4 5.2c-1 1.6-3.6.6-4.6-2.4z\"/><rect x=\"-.55\" y=\"-4.6\" width=\"1.1\" height=\"10\" rx=\".5\"/></g><rect x=\"47.75\" y=\"20.5\" width=\"1.25\" height=\"3\" rx=\".625\" fill=\"#1b2236\"/><rect x=\"45.15\" y=\"19.0\" width=\"1.25\" height=\"6\" rx=\".625\" fill=\"#1b2236\"/><rect x=\"42.55\" y=\"17.0\" width=\"1.25\" height=\"10\" rx=\".625\" fill=\"#1b2236\"/><rect x=\"39.95\" y=\"19.0\" width=\"1.25\" height=\"6\" rx=\".625\" fill=\"#1b2236\"/><rect x=\"37.35\" y=\"16.0\" width=\"1.25\" height=\"12\" rx=\".625\" fill=\"#1b2236\"/><rect x=\"34.75\" y=\"18.0\" width=\"1.25\" height=\"8\" rx=\".625\" fill=\"#1b2236\"/><rect x=\"71.00\" y=\"20.5\" width=\"1.25\" height=\"3\" rx=\".625\" fill=\"#1b2236\"/><rect x=\"73.60\" y=\"19.0\" width=\"1.25\" height=\"6\" rx=\".625\" fill=\"#1b2236\"/><rect x=\"76.20\" y=\"17.0\" width=\"1.25\" height=\"10\" rx=\".625\" fill=\"#1b2236\"/><rect x=\"78.80\" y=\"19.0\" width=\"1.25\" height=\"6\" rx=\".625\" fill=\"#1b2236\"/><rect x=\"81.40\" y=\"16.0\" width=\"1.25\" height=\"12\" rx=\".625\" fill=\"#1b2236\"/><rect x=\"84.00\" y=\"18.0\" width=\"1.25\" height=\"8\" rx=\".625\" fill=\"#1b2236\"/><rect x=\"16\" y=\"35\" width=\"88\" height=\"7\" fill=\"currentColor\"/><rect x=\"22\" y=\"44\" width=\"76\" height=\"3\" fill=\"currentColor\"/><rect x=\"27\" y=\"50\" width=\"12\" height=\"36\" fill=\"currentColor\"/><rect x=\"45\" y=\"50\" width=\"12\" height=\"36\" fill=\"currentColor\"/><rect x=\"63\" y=\"50\" width=\"12\" height=\"36\" fill=\"currentColor\"/><rect x=\"81\" y=\"50\" width=\"12\" height=\"36\" fill=\"currentColor\"/><rect x=\"20\" y=\"89\" width=\"80\" height=\"5\" fill=\"currentColor\"/><rect x=\"13\" y=\"96\" width=\"94\" height=\"5\" fill=\"currentColor\"/><rect x=\"6\" y=\"103\" width=\"108\" height=\"6\" fill=\"currentColor\"/></svg></span><span class=\"ds-emb-line\"><svg viewBox=\"0 0 120 112\" aria-hidden=\"true\"><path d=\"M60 6 L110 32 H10 Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"/><g transform=\"translate(60 21)\" fill=\"currentColor\"><path d=\"M-.6-3.6C-2.6-6.6-7.2-7.4-8-5.2c-.8 2.2 1.6 5 6.8 5.6z\"/><path d=\"M.6-3.6C2.6-6.6 7.2-7.4 8-5.2c.8 2.2-1.6 5-6.8 5.6z\"/><path d=\"M-1.2 1C-4.4 1.2-6.4 3.4-5.4 5.2c1 1.6 3.6.6 4.6-2.4z\"/><path d=\"M1.2 1C4.4 1.2 6.4 3.4 5.4 5.2c-1 1.6-3.6.6-4.6-2.4z\"/><rect x=\"-.55\" y=\"-4.6\" width=\"1.1\" height=\"10\" rx=\".5\"/></g><rect x=\"47.75\" y=\"20.5\" width=\"1.25\" height=\"3\" rx=\".625\" fill=\"currentColor\"/><rect x=\"45.15\" y=\"19.0\" width=\"1.25\" height=\"6\" rx=\".625\" fill=\"currentColor\"/><rect x=\"42.55\" y=\"17.0\" width=\"1.25\" height=\"10\" rx=\".625\" fill=\"currentColor\"/><rect x=\"39.95\" y=\"19.0\" width=\"1.25\" height=\"6\" rx=\".625\" fill=\"currentColor\"/><rect x=\"37.35\" y=\"16.0\" width=\"1.25\" height=\"12\" rx=\".625\" fill=\"currentColor\"/><rect x=\"34.75\" y=\"18.0\" width=\"1.25\" height=\"8\" rx=\".625\" fill=\"currentColor\"/><rect x=\"71.00\" y=\"20.5\" width=\"1.25\" height=\"3\" rx=\".625\" fill=\"currentColor\"/><rect x=\"73.60\" y=\"19.0\" width=\"1.25\" height=\"6\" rx=\".625\" fill=\"currentColor\"/><rect x=\"76.20\" y=\"17.0\" width=\"1.25\" height=\"10\" rx=\".625\" fill=\"currentColor\"/><rect x=\"78.80\" y=\"19.0\" width=\"1.25\" height=\"6\" rx=\".625\" fill=\"currentColor\"/><rect x=\"81.40\" y=\"16.0\" width=\"1.25\" height=\"12\" rx=\".625\" fill=\"currentColor\"/><rect x=\"84.00\" y=\"18.0\" width=\"1.25\" height=\"8\" rx=\".625\" fill=\"currentColor\"/><rect x=\"16\" y=\"35\" width=\"88\" height=\"7\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"/><rect x=\"22\" y=\"44\" width=\"76\" height=\"3\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"/><rect x=\"27\" y=\"50\" width=\"12\" height=\"36\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"/><rect x=\"45\" y=\"50\" width=\"12\" height=\"36\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"/><rect x=\"63\" y=\"50\" width=\"12\" height=\"36\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"/><rect x=\"81\" y=\"50\" width=\"12\" height=\"36\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"/><rect x=\"20\" y=\"89\" width=\"80\" height=\"5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"/><rect x=\"13\" y=\"96\" width=\"94\" height=\"5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"/><rect x=\"6\" y=\"103\" width=\"108\" height=\"6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"/></svg></span><span class=\"ds-emb-bf\"><svg viewBox=\"-9 -8 18 14\" aria-hidden=\"true\"><g fill=\"currentColor\"><path d=\"M-.6-3.6C-2.6-6.6-7.2-7.4-8-5.2c-.8 2.2 1.6 5 6.8 5.6z\"/><path d=\"M.6-3.6C2.6-6.6 7.2-7.4 8-5.2c.8 2.2-1.6 5-6.8 5.6z\"/><path d=\"M-1.2 1C-4.4 1.2-6.4 3.4-5.4 5.2c1 1.6 3.6.6 4.6-2.4z\"/><path d=\"M1.2 1C4.4 1.2 6.4 3.4 5.4 5.2c-1 1.6-3.6.6-4.6-2.4z\"/><rect x=\"-.55\" y=\"-4.6\" width=\"1.1\" height=\"10\" rx=\".5\"/></g></svg></span></div>",
+      "css": ".ds-emb { display:flex; gap:24px; align-items:center; } .ds-emb svg { display:block; width:100%; } .ds-emb-solid { width:56px; color:#ee7a2f; } .ds-emb-seal { width:88px; color:#ee7a2f; background:#1b2236; padding:16px; } .ds-emb-line { width:88px; color:#b9b9b3; } .ds-emb-bf { width:56px; color:#ee7a2f; }"
+    },
+    {
+      "name": "Ondas de voz y subrayado en trazo",
+      "kind": "custom",
+      "refersTo": "voice-wave",
+      "description": "Ondas de voz animadas (carga, IA escribiendo) y la palabra clave subrayada en trazo naranja.",
+      "html": "<div class=\"ds-voice-demo\"><p class=\"ds-swash-h\">Empieza hoy tu <span class=\"ds-swash\">entrenamiento<svg viewBox=\"0 0 200 14\" preserveAspectRatio=\"none\" aria-hidden=\"true\"><path d=\"M2 9.5C40 4.5 110 1.8 198 4.2c-62 1.6-118 4.6-150 9.3\" fill=\"currentColor\"/></svg></span>.</p><p class=\"ds-typing\"><span class=\"ds-wave\" aria-hidden=\"true\"><span style=\"height:35%;animation-delay:0.00s\"></span><span style=\"height:70%;animation-delay:0.11s\"></span><span style=\"height:100%;animation-delay:0.22s\"></span><span style=\"height:55%;animation-delay:0.33s\"></span><span style=\"height:85%;animation-delay:0.44s\"></span><span style=\"height:70%;animation-delay:0.00s\"></span><span style=\"height:85%;animation-delay:0.11s\"></span><span style=\"height:55%;animation-delay:0.22s\"></span><span style=\"height:100%;animation-delay:0.33s\"></span></span> escribiendo…</p></div>",
+      "css": ".ds-voice-demo { font-family: var(--font-sans, 'Schibsted Grotesk Variable', 'Helvetica Neue', Arial, sans-serif); color:#1b2236; } .ds-swash-h { margin:0 0 24px; font-size:40px; font-weight:800; line-height:1; letter-spacing:-0.035em; } .ds-swash { position:relative; display:inline-block; white-space:nowrap; } .ds-swash svg { position:absolute; left:-2%; bottom:-0.18em; width:104%; height:0.22em; color:#ee7a2f; pointer-events:none; } .ds-typing { display:inline-flex; align-items:center; gap:8px; margin:0; font-size:14px; color:#4a4a4d; } .ds-wave { display:inline-flex; align-items:center; gap:3px; height:16px; color:#ee7a2f; } .ds-wave span { width:3px; border-radius:999px; background:currentColor; animation:ds-voice 1.1s ease-in-out infinite; } @keyframes ds-voice { 0%,100% { transform:scaleY(0.45); } 50% { transform:scaleY(1); } } @media (prefers-reduced-motion: reduce) { .ds-wave span { animation:none; } }"
+    },
+    {
+      "name": "Aviso",
+      "kind": "custom",
+      "refersTo": "alert",
+      "description": "Fondo piedra con regla superior de 2px; la regla dice el tono y solo el error cambia de fondo.",
+      "html": "<div class=\"ds-alerts\"><div class=\"ds-alert\" role=\"status\"><p><b>Inscripción confirmada</b><span>Ya puedes entrar al aula.</span></p></div><div class=\"ds-alert ds-alert-warn\" role=\"status\"><p><b>Pago pendiente</b><span>Completa el pago para acceder.</span></p></div><div class=\"ds-alert ds-alert-danger\" role=\"alert\"><p><b>No se pudo guardar</b><span>Revisa la conexión e inténtalo de nuevo.</span></p></div></div>",
+      "css": ".ds-alerts { font-family: var(--font-sans, 'Schibsted Grotesk Variable', 'Helvetica Neue', Arial, sans-serif); display:grid; gap:12px; max-width:420px; } .ds-alert { background:#f2f2f0; color:#1b2236; border-top:2px solid #1b2236; padding:12px 16px; font-size:14px; } .ds-alert p { margin:0; } .ds-alert b { display:block; } .ds-alert span { color:#4a4a4d; } .ds-alert-warn { border-top-color:#a8501a; } .ds-alert-danger { background:#fbe5e3; border-top-color:#b42318; }"
+    },
+    {
+      "name": "Botones de la home",
+      "kind": "button",
+      "refersTo": "button-home",
+      "description": "Solo home: primario y contorno con radio de 8px y 48px de alto en el héroe; el contorno pasa a arena en hover.",
+      "html": "<div class=\"ds-hb-row\"><a class=\"ds-hb ds-hb-primary\" href=\"#\">Ver cursos <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14\"/><path d=\"m12 5 7 7-7 7\"/></svg></a><a class=\"ds-hb ds-hb-outline\" href=\"#\">Crear cuenta</a></div>",
+      "css": ".ds-hb-row { font-family: var(--font-sans, 'Schibsted Grotesk Variable', 'Helvetica Neue', Arial, sans-serif); display:flex; gap:12px; flex-wrap:wrap; } .ds-hb { display:inline-flex; align-items:center; gap:8px; height:48px; padding:0 28px; font-size:15px; font-weight:600; border-radius:8px; border:1px solid; text-decoration:none; transition: background-color 150ms ease-out, color 150ms ease-out, transform 150ms ease-out; } .ds-hb:active { transform:translateY(1px); } .ds-hb:focus-visible { outline:2px solid #1f1f22; outline-offset:2px; } .ds-hb-primary { background:#ee7a2f; border-color:#ee7a2f; color:#1f1f22; } .ds-hb-primary:hover { background:#f28c48; } .ds-hb-outline { background:#ffffff; border-color:#b9b9b3; color:#1f1f22; } .ds-hb-outline:hover { background:#f6f4f1; }"
+    },
+    {
+      "name": "Tarjeta de curso de la home",
+      "kind": "card",
+      "refersTo": "card-home",
+      "description": "Solo home: 12px, borde hairline, plana en reposo; elevación y borde de regla fuerte en hover. Sin portada de relleno.",
+      "html": "<article class=\"ds-cc\"><h3><a href=\"#\">Curso de Oratoria</a></h3><p class=\"ds-cc-sk\"><b>Habilidades: </b>Comunicación verbal, Persuasión</p><ul class=\"ds-cc-meta\"><li>Básico</li><li>10 h</li><li>12 lecciones</li></ul><div class=\"ds-cc-foot\"><span class=\"ds-cc-price\">USD 39</span><span class=\"ds-cc-cta\">Inscribirme &rarr;</span></div></article>",
+      "css": ".ds-cc { font-family: var(--font-sans, 'Schibsted Grotesk Variable', 'Helvetica Neue', Arial, sans-serif); position:relative; max-width:360px; padding:24px; background:#ffffff; color:#1f1f22; border:1px solid #e4e2dd; border-radius:12px; transition: box-shadow 200ms ease-out, border-color 200ms ease-out; } .ds-cc:hover { border-color:#b9b9b3; box-shadow:0 1px 2px rgba(31,31,34,0.06), 0 12px 32px -12px rgba(31,31,34,0.18); } .ds-cc h3 { margin:0; font-size:18px; font-weight:700; letter-spacing:-0.01em; } .ds-cc h3 a { color:inherit; text-decoration:none; } .ds-cc h3 a::after { content:''; position:absolute; inset:0; } .ds-cc:hover h3 a { text-decoration:underline; text-underline-offset:4px; } .ds-cc-sk { margin:8px 0 0; font-size:14px; color:#4a4a4d; } .ds-cc-sk b { color:#1f1f22; } .ds-cc-meta { display:flex; gap:16px; margin:20px 0 0; padding:0; list-style:none; font-size:14px; color:#4a4a4d; } .ds-cc-foot { display:flex; justify-content:space-between; align-items:center; margin-top:16px; padding-top:16px; border-top:1px solid #e4e2dd; } .ds-cc-price { font-size:20px; font-weight:800; font-variant-numeric:tabular-nums; } .ds-cc-cta { font-size:14px; font-weight:600; color:#c25414; }"
+    },
+    {
+      "name": "Vista previa del aula",
+      "kind": "custom",
+      "refersTo": "home-classroom-preview",
+      "description": "Solo home (firma): panel flotante dibujado en código con la etiqueta 'Ejemplo', progreso y rúbrica que crecen al cargar.",
+      "html": "<div class=\"ds-pv-field\"><div class=\"ds-pv\"><div class=\"ds-pv-head\"><span>Mi aprendizaje</span><span class=\"ds-ex\">Ejemplo</span></div><div class=\"ds-pv-body\"><p class=\"ds-pv-t\">Curso de Oratoria</p><p class=\"ds-pv-s\">Nivel básico · 12 lecciones</p><div class=\"ds-bar\"><i style=\"width:62%\"></i></div><p class=\"ds-pv-r\">Rúbrica · Discurso de 3 minutos</p><div class=\"ds-rub\"><span>Claridad del mensaje</span><b><i></i><i></i><i></i><em></em></b></div><div class=\"ds-rub\"><span>Presencia y voz</span><b><i></i><i></i><em></em><em></em></b></div></div></div></div>",
+      "css": ".ds-pv-field { font-family: var(--font-sans, 'Schibsted Grotesk Variable', 'Helvetica Neue', Arial, sans-serif); background:#fdf3eb; border-radius:28px; padding:40px; max-width:520px; } .ds-pv { background:#ffffff; color:#1f1f22; border:1px solid #e4e2dd; border-radius:16px; box-shadow:0 2px 4px rgba(31,31,34,0.06), 0 24px 48px -20px rgba(31,31,34,0.28); } .ds-pv-head { display:flex; justify-content:space-between; align-items:center; padding:14px 24px; border-bottom:1px solid #e4e2dd; font-size:14px; font-weight:600; } .ds-ex { background:#fdf3eb; color:#c25414; border-radius:6px; padding:2px 8px; font-size:12px; font-weight:600; } .ds-pv-body { padding:20px 24px 24px; } .ds-pv-t { margin:0; font-size:18px; font-weight:700; } .ds-pv-s { margin:0; font-size:14px; color:#616165; } .ds-bar { margin-top:12px; height:8px; background:#f6f4f1; border-radius:9999px; overflow:hidden; } .ds-bar i { display:block; height:100%; background:#ee7a2f; border-radius:9999px; transform-origin:left; animation:ds-grow 700ms cubic-bezier(0.16,1,0.3,1) 150ms both; } .ds-pv-r { margin:24px 0 12px; font-size:14px; font-weight:700; } .ds-rub { display:grid; grid-template-columns:11rem 1fr; gap:12px; align-items:center; font-size:14px; color:#4a4a4d; margin-top:12px; } .ds-rub b { display:flex; gap:4px; } .ds-rub i, .ds-rub em { flex:1; height:8px; border-radius:9999px; } .ds-rub i { background:#ee7a2f; transform-origin:left; animation:ds-grow 700ms cubic-bezier(0.16,1,0.3,1) 350ms both; } .ds-rub em { background:#f6f4f1; } @keyframes ds-grow { from { transform:scaleX(0); } to { transform:scaleX(1); } } @media (prefers-reduced-motion: reduce) { .ds-bar i, .ds-rub i { animation:none; } }"
+    }
+  ],
+  "narrative": {
+    "northStar": "El cartel del ciclo de conferencias",
+    "overview": "> **Portal público (nov. 2026, decisión de la clienta):** el portal (home, catálogo, acceso, pie) es naranja y blanco, sin la tinta azul. La clase `.theme-portal` en PublicLayout redefine `ink` al carbón neutro (charcoal); el pie y los campos con texto blanco usan el naranja fuerte (orange-strong, 4.6:1). Cabecera, pie naranja y páginas interiores siguen como están.\n>\n> **Home canon (nov. 2026, cambio aprobado solo para la home):** la usuaria eligió el estándar de la categoría, con Coursera y edX como vara. La home es la portada de una academia online de referencia: la oferta y la acción primero, y enseguida la prueba de que el aprendizaje se mide (rúbrica, progreso, certificado verificable). Fondo blanco con bandas de arena, tarjetas blancas de 12px con borde hairline, botones de 8px, sombra solo en paneles flotantes y en hover, iconos Lucide de trazo 1.75 y el templo pequeño, nunca a escala de ornamento. Se retiraron el Pórtico, el campo naranja con tarjetas flotantes giradas, la franja de iconos en círculos naranjas y los campos de cartel a sangre de la home. Es un dialecto local: el campus y el panel siguen con el sistema de abajo (esquinas de 2px, reglas de tinta, sin sombras) y ninguna regla propia de la home sale de ella.\n\nCada curso se anuncia como una conferencia magistral de un ciclo universitario de tradición suiza, bajo el templo del logo institucional. El sistema es una retícula de 12 columnas que se nota en el ritmo, sobre papel blanco frío y gris piedra, con una grotesca de gran escala que hace de titular de cartel. La tinta azul marino de la comunicación de marca estructura todo con reglas de 1px; el naranja institucional aparece en campos planos a sangre y solo donde hay acción o anuncio.\n\nEl logo es la fuente del ornamento. Su templo (frontón con mariposa y ondas de voz, entablamento, cuatro columnas y basamento escalonado) está redibujado en vector y descompuesto en piezas: los campos de cartel naranjas se construyen como templo (frontón arriba, columnata de fondo, basamento abajo), el templo en línea es marca de agua y sello, las ondas de voz marcan ritmo y actividad, y la mariposa señala transformación. De las piezas de redes de la marca llegan dos acentos más: el subrayado en trazo naranja bajo la palabra clave y las tres chispas del titular.\n\nLa densidad cambia de registro sin cambiar de mundo. El portal público persuade con titulares de hasta 4.5rem, campos de color a sangre y listas numeradas \"N.º 01\". El campus y el panel operan con el mismo vocabulario de reglas, tabla y libro de registro, más contenido, y el naranja reducido a la marca \"ahora\", la pestaña activa y la acción principal. Rechazos confirmados en el contrato de dirección: el héroe SaaS centrado con una fila de tarjetas iguales, y la plantilla LMS gris de avatares. No hay sombras difusas ni degradados decorativos.",
+    "keyCharacteristics": [
+      "Retícula de 12 columnas (6/6 en el héroe de la home, 7/5 en acceso, 4/8 en las secciones), contenedor de 1440px.",
+      "Reglas de 1px como estructura principal; reglas de tinta abren bloques y reglas claras dividen filas.",
+      "Esquinas rectas fuera de la home: 2px como máximo en controles, 0 en campos y diálogos. La home usa su propia escala redondeada (6, 8, 12, 16 y 28px).",
+      "Naranja plano, racionado a acción, cartel e indicador de estado.",
+      "El templo del logo como único repertorio ornamental: frontón, columnata, basamento, ondas de voz, mariposa.",
+      "Numeración de serie tabular \"N.º 01\" para cursos, módulos y pasos.",
+      "Estado codificado por forma, nunca solo por color."
+    ],
+    "rules": [
+      {
+        "name": "The Orange Ration Rule",
+        "body": "El naranja aparece como campo plano o como marca de acción, estado y ornamento de marca. Nunca va como texto de cuerpo sobre papel (para eso existe el naranja profundo) y nunca lleva texto blanco encima.",
+        "section": "colors"
+      },
+      {
+        "name": "The Home Orange Rule",
+        "body": "En la home el naranja institucional solo rellena la acción primaria, las barras de progreso y rúbrica y marcas de dato; el texto naranja es siempre naranja fuerte y las superficies naranjas se reducen al tinte.",
+        "section": "colors"
+      },
+      {
+        "name": "The Red Is Destructive Rule",
+        "body": "El rojo queda solo para errores y acciones destructivas. Los demás estados se dicen en tinta o grafito, con la forma de su marca y el color de su regla.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tabular Ledger Rule",
+        "body": "Toda cifra que se compara (precios, porcentajes, contadores, fechas en tabla, series) usa cifras tabulares.",
+        "section": "typography"
+      },
+      {
+        "name": "The Caps Are Furniture Rule",
+        "body": "Las versales pequeñas son mobiliario de datos (cabeceras de tabla y columna, grupos de navegación, etiquetas de estado). No se ponen encima de un titular como antetítulo.",
+        "section": "typography"
+      },
+      {
+        "name": "The No Blur Shadow Rule",
+        "body": "En campus, panel y portal fuera de la home, ningún elemento proyecta sombra. Si algo necesita destacar, lleva una regla, un cambio de tono o un campo de color.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Float Or Hover Rule",
+        "body": "En la home la sombra se gana: flotación solo para paneles que representan una pantalla o un documento, elevación solo en hover. Una tarjeta en reposo es plana, con borde hairline.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do fuera de la home, abrir cada sección y cada lista con una regla de tinta de 1px y separar las filas con regla clara.",
+      "Do poner tinta sobre naranja, nunca papel ni blanco.",
+      "Do usar naranja profundo cuando el naranja tenga que ser texto o enlace sobre papel.",
+      "Do codificar el estado por forma (relleno, anillo, vacío, trazo cortado, tachado, candado) además de por color.",
+      "Do numerar las series con \"N.º 01\" en cifras tabulares.",
+      "Do mantener los radios en 2px para controles y en 0 para campos, diálogos y bandas en campus, panel y portal fuera de la home.",
+      "Do usar un libro de registro o una tabla con reglas para los datos clave, en vez de tarjetas (campus y panel).",
+      "Do fuera de la home, construir los campos naranjas de anuncio como templo: frontón arriba, columnata de fondo, basamento abajo.",
+      "Do usar las ondas de voz animadas para carga y para la IA escribiendo, y la mariposa para logros de cierre.",
+      "Do en la home, usar tarjetas de 12px con borde hairline, botones de 8px y sombra solo en paneles flotantes y en hover.",
+      "Do etiquetar \"Ejemplo\" toda muestra de la home que no sea dato real (vista previa del aula, aula de ejemplo, certificado).",
+      "Do usar en la home solo cifras reales en la franja de hechos y mostrar la portada de un curso solo si tiene imagen propia.",
+      "Do usar los pasos de texto 0.6875, 0.8125 y 0.9375rem para sus usos asignados en lugar de redondearlos."
+    ],
+    "donts": [
+      "Don't usar sombras difusas (salvo las dos sombras de la home) ni degradados decorativos; los únicos patrones repetidos permitidos son el trazo cortado del paso bloqueado y la columnata del templo.",
+      "Don't inventar ornamentos fuera del templo del logo y los acentos de redes (subrayado en trazo, chispas); nada de ilustraciones genéricas, blobs ni iconos decorativos.",
+      "Don't poner más de una palabra con subrayado en trazo por titular, ni las chispas fuera del lema de portada.",
+      "Don't construir un héroe centrado con una fila de tarjetas iguales debajo.",
+      "Don't usar la plantilla LMS gris de avatares, ni tarjetas redondeadas fuera de la home; el avatar es un cuadro de 2px con iniciales en tinta.",
+      "Don't colocar antetítulos en versales encima de los titulares; las versales son solo para cabeceras de tabla, grupos de navegación y etiquetas.",
+      "Don't exportar la escala redondeada, el tinte, la arena, el hairline ni las sombras de la home al campus, al panel ni a la cabecera compartida.",
+      "Don't poner en la home antetítulos sobre los titulares, portadas de relleno, sombra en tarjetas en reposo, campos naranjas a sangre ni el templo a escala de ornamento.",
+      "Don't introducir una segunda familia tipográfica; la jerarquía sale del tamaño y el peso de Schibsted Grotesk.",
+      "Don't usar el naranja como fondo de sección de lectura larga ni como color de texto de cuerpo.",
+      "Don't usar el rojo para estados que no sean error o destrucción, ni el paso micro de 0.625rem para frases que haya que leer."
+    ]
+  }
+}

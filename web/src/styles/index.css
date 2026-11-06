@@ -1,0 +1,179 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/schibsted-grotesk';
+@import '@fontsource-variable/bricolage-grotesque';
+@import '@fontsource-variable/dm-sans';
+
+/*
+ * CEHACIS — mundo visual "Cartel de ciclo de conferencias".
+ * Retícula suiza, campos planos de naranja institucional racionados a la acción,
+ * grotesca de gran escala, reglas de 1px, esquinas rectas, sin sombras difusas ni degradados.
+ */
+@theme {
+  --font-sans: 'Schibsted Grotesk Variable', 'Helvetica Neue', Arial, sans-serif;
+
+  --color-paper: #ffffff;
+  --color-stone: #f2f2f0;
+  --color-stone-2: #e8e8e4;
+  --color-line: #d9d9d4;
+  --color-line-strong: #b9b9b3;
+  --color-ink: #1b2236; /* tinta azul marino de la comunicación de marca */
+  --color-graphite: #4a4a4d;
+  --color-muted: #616165;
+  --color-orange: #ee7a2f;
+  --color-orange-soft: #fbe3d2;
+  --color-orange-deep: #a8501a;
+  --color-orange-strong: #c25414; /* naranja que admite texto blanco (4.6:1) */
+  --color-orange-tint: #fdf3eb; /* lavado muy suave del portal (paneles de la home) */
+  --color-sand: #f6f4f1; /* bandas alternas del portal */
+  --color-hairline: #e4e2dd; /* borde de tarjetas del portal */
+  --shadow-lift: 0 1px 2px rgba(31, 31, 34, 0.06), 0 12px 32px -12px rgba(31, 31, 34, 0.18);
+  --shadow-float: 0 2px 4px rgba(31, 31, 34, 0.06), 0 24px 48px -20px rgba(31, 31, 34, 0.28);
+  --color-success: #1f7a4d;
+  --color-success-soft: #e1f1e8;
+  --color-danger: #b42318;
+  --color-danger-soft: #fbe5e3;
+  --color-warning: #8f5207;
+  --color-warning-soft: #fbefd9;
+  --color-info: #2d5b8a;
+  --color-info-soft: #e2ebf5;
+
+  --radius-xs: 1px;
+  --radius-sm: 2px;
+
+  --text-display: clamp(2rem, 1.4rem + 2vw, 3.5rem);
+  --text-display--line-height: 1;
+  --text-display--letter-spacing: -0.035em;
+  --text-title: clamp(1.5rem, 1.2rem + 0.9vw, 2.125rem);
+  --text-title--line-height: 1.02;
+  --text-title--letter-spacing: -0.03em;
+
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --animate-rise: rise 520ms var(--ease-out-quint) both;
+  --animate-fade: fade 320ms var(--ease-out-quint) both;
+  --animate-grow: grow 700ms var(--ease-out-expo) both;
+  --animate-slide-in: slide-in 360ms var(--ease-out-expo) both;
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: none; }
+  }
+  /* Barras de la vista previa del aula: crecen desde la izquierda. */
+  @keyframes grow {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+  @keyframes fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  /* Ondas de voz del emblema: pulso de actividad (carga, IA escribiendo). */
+  @keyframes voice {
+    0%, 100% { transform: scaleY(0.45); }
+    50% { transform: scaleY(1); }
+  }
+  @keyframes slide-in {
+    from { opacity: 0; transform: translateX(24px); }
+    to { opacity: 1; transform: none; }
+  }
+}
+
+/* Portal público: naranja y blanco, sin la tinta azul; el texto oscuro pasa a carbón neutro. */
+.theme-portal {
+  --color-ink: #1f1f22;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    @apply bg-paper text-ink font-sans;
+    font-feature-settings: 'ss01', 'tnum' 0;
+  }
+  ::selection {
+    background: var(--color-orange);
+    color: var(--color-ink);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+  a {
+    text-underline-offset: 0.2em;
+    text-decoration-thickness: 1px;
+  }
+  input,
+  textarea,
+  select {
+    caret-color: var(--color-orange-deep);
+  }
+  /* Barras de desplazamiento con la paleta */
+  * {
+    scrollbar-color: var(--color-line-strong) transparent;
+    scrollbar-width: thin;
+  }
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+  h1, h2, h3 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+}
+
+/* Contenido de lecciones (HTML del editor). Medida de lectura y ritmo editorial. */
+@layer components {
+  .prose-lesson {
+    max-width: 70ch;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-ink);
+  }
+  .prose-lesson > * + * { margin-top: 1em; }
+  .prose-lesson h2 { font-size: 1.4rem; line-height: 1.15; letter-spacing: -0.02em; font-weight: 700; margin-top: 2.2em; }
+  .prose-lesson h3 { font-size: 1.125rem; line-height: 1.25; font-weight: 700; margin-top: 1.8em; }
+  .prose-lesson ul { list-style: none; padding-left: 0; }
+  .prose-lesson ul li { position: relative; padding-left: 1.4em; }
+  .prose-lesson ul li::before { content: ''; position: absolute; left: 0; top: 0.72em; width: 0.6em; height: 2px; background: var(--color-orange); }
+  .prose-lesson ol { list-style: decimal; padding-left: 1.4em; }
+  .prose-lesson ol li::marker { font-variant-numeric: tabular-nums; color: var(--color-graphite); font-weight: 600; }
+  .prose-lesson li + li { margin-top: 0.4em; }
+  .prose-lesson blockquote { border-top: 1px solid var(--color-ink); border-bottom: 1px solid var(--color-ink); padding: 1.1em 0; font-size: 1.15rem; line-height: 1.45; font-weight: 600; letter-spacing: -0.01em; }
+  .prose-lesson a { color: var(--color-orange-deep); text-decoration: underline; }
+  .prose-lesson strong { font-weight: 700; }
+  .prose-lesson iframe { width: 100%; aspect-ratio: 16 / 9; height: auto; border: 0; }
+  .prose-lesson img { max-width: 100%; height: auto; }
+  .prose-lesson hr { border: 0; border-top: 1px solid var(--color-line); margin: 2em 0; }
+
+  /* Editor Tiptap */
+  .tiptap { outline: none; min-height: 18rem; }
+  .tiptap p.is-editor-empty:first-child::before { content: attr(data-placeholder); color: var(--color-muted); float: left; height: 0; pointer-events: none; }
+}
+
+/*
+ * Páginas con barra de acción fija inferior en móvil (p. ej. ficha de curso): el documento reserva su altura
+ * al final (después del pie) y el desplazamiento programático/por foco no deja contenido bajo la barra.
+ */
+@media (max-width: 1023px) {
+  html.has-mobile-bar {
+    scroll-padding-bottom: calc(6rem + env(safe-area-inset-bottom));
+  }
+  html.has-mobile-bar body {
+    padding-bottom: calc(4.75rem + env(safe-area-inset-bottom));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}
