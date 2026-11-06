@@ -8,3 +8,4 @@ server/storage/
 
 .claude/settings.local.json
 .wrangler/
+CREDENCIALES-PRODUCCION.txt
