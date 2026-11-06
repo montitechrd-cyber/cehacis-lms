@@ -26,31 +26,33 @@ export type PointEvent = keyof typeof POINT_EVENTS;
  * Otorga puntos según la regla configurada. Idempotente por (evento, refType, refId) para no duplicar
  * puntos si una acción se repite. Recalcula nivel e insignias. Nunca lanza.
  */
-export async function awardPoints(userId: number, event: PointEvent, ref?: { type: string; id: number }, reason?: string) {
+export async function awardPoints(userId: number, event: PointEvent, ref?: { type: string; id: number }, reason?: string, pointsOverride?: number) {
   try {
     const rule = await prisma.pointRule.findUnique({ where: { event } });
-    if (!rule || !rule.isActive || rule.points === 0) return 0;
+    // Con pointsOverride (p. ej. los puntos propios de un reto) no hace falta una regla activa.
+    const points = pointsOverride ?? (rule && rule.isActive ? rule.points : 0);
+    if (!points) return 0;
     if (ref) {
       const dup = await prisma.pointTransaction.findFirst({ where: { userId, event, refType: ref.type, refId: ref.id } });
       if (dup) return 0;
     }
-    if (rule.dailyCap) {
+    if (rule?.dailyCap) {
       const since = new Date();
       since.setHours(0, 0, 0, 0);
       const today = await prisma.pointTransaction.aggregate({ where: { userId, event, createdAt: { gte: since } }, _sum: { points: true } });
       if ((today._sum.points ?? 0) >= rule.dailyCap) return 0;
     }
     await prisma.pointTransaction.create({
-      data: { userId, points: rule.points, event, reason: reason ?? rule.name, refType: ref?.type, refId: ref?.id },
+      data: { userId, points, event, reason: reason ?? rule?.name ?? event, refType: ref?.type, refId: ref?.id },
     });
     const profile = await prisma.studentProfile.upsert({
       where: { userId },
-      update: { points: { increment: rule.points } },
-      create: { userId, points: rule.points },
+      update: { points: { increment: points } },
+      create: { userId, points },
     });
     await syncLevel(userId, profile.points, profile.levelId);
     await evaluateBadges(userId);
-    return rule.points;
+    return points;
   } catch (e) {
     console.error('[gamification] awardPoints', e);
     return 0;

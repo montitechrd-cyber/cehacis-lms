@@ -50,7 +50,7 @@ function Conv({ id }: { id: string }) {
   useEffect(() => { setOlder([]); setBefore(null); setBody(''); }, [id]);
   const count = q.data?.data.length;
   const lastId = q.data?.data[q.data.data.length - 1]?.id;
-  useEffect(() => endRef.current?.scrollIntoView({ block: 'end' }), [lastId, count]);
+  useEffect(() => { endRef.current?.scrollIntoView({ block: 'end' }); }, [lastId, count]);
 
   const send = useAction((b: string) => api.post(`/community/conversations/${id}/messages`, { body: b }), {
     invalidate: [['messages', 'thread', id], ['messages', 'list']],

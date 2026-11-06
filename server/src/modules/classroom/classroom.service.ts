@@ -153,7 +153,8 @@ export async function isLessonCompletable(userId: number, lessonId: number): Pro
     case 'ACTIVITY': {
       if (!lesson.requiredActivityId) break;
       const sub = await prisma.activitySubmission.findFirst({
-        where: { activityId: lesson.requiredActivityId, OR: [{ userId }, { group: { members: { some: { userId } } } }] },
+        // Una entrega devuelta para corregir no cuenta hasta que se reenvíe.
+        where: { activityId: lesson.requiredActivityId, status: { not: 'RETURNED' }, OR: [{ userId }, { group: { members: { some: { userId } } } }] },
         select: { id: true },
       });
       if (!sub) missing.push(`Entregar la actividad «${lesson.requiredActivity?.title ?? ''}»`);
@@ -181,6 +182,22 @@ export async function completeLesson(userId: number, lessonId: number): Promise<
   });
   if (pending === 0) await awardPoints(userId, 'MODULE_COMPLETED', { type: 'module', id: lesson.moduleId });
   return true;
+}
+
+/**
+ * Una entrega devuelta para corregir deja de cumplir el requisito: reabre las lecciones que dependían de esa
+ * actividad (solo mientras la inscripción siga activa; un curso ya cerrado no se reabre).
+ */
+export async function reopenActivityLessons(userIds: number[], activityId: number, courseId: number) {
+  if (!userIds.length) return;
+  const active = await prisma.enrollment.findMany({ where: { courseId, status: 'ACTIVE', userId: { in: userIds } }, select: { userId: true } });
+  if (!active.length) return;
+  const lessons = await prisma.lesson.findMany({ where: { completionRule: 'ACTIVITY', requiredActivityId: activityId }, select: { id: true } });
+  if (!lessons.length) return;
+  await prisma.lessonProgress.updateMany({
+    where: { userId: { in: active.map((a) => a.userId) }, lessonId: { in: lessons.map((l) => l.id) }, status: 'COMPLETED' },
+    data: { status: 'IN_PROGRESS', completedAt: null },
+  });
 }
 
 /** Reevalúa lecciones con requisito automático (RESOURCES, ASSESSMENT, ACTIVITY) y las completa. */
@@ -211,6 +228,119 @@ export async function tryCompleteLessons(userId: number, courseId: number) {
 }
 
 const avg = (xs: number[]) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null);
+const round2 = (n: number) => Math.round(n * 100) / 100;
+
+/** Situación del estudiante frente a los requisitos de finalización del curso (fuente única de verdad). */
+export interface CompletionStatus {
+  lessons: { completed: number; total: number; met: boolean };
+  finals: { id: number; title: string; passingScore: number; attempts: number; bestPercentage: number | null; met: boolean }[];
+  grade: { value: number | null; required: number; enforced: boolean; met: boolean };
+  attendance: { required: number; attended: number; recorded: number; pendingRecord: number; upcoming: number; pct: number | null; met: boolean };
+  eligible: boolean;
+}
+
+/**
+ * Evalúa los requisitos de finalización:
+ * - Lecciones: todas completadas (o, si el curso no lo exige, basta con aprobar la evaluación final).
+ * - Evaluaciones finales: cada una aprobada con su propio umbral.
+ * - Nota final del curso >= course.passingScore. Ponderada sobre TODAS las evaluaciones con peso
+ *   (las no presentadas cuentan 0); sin pesos, promedio de las finales.
+ * - Asistencia >= minAttendancePct sobre las sesiones que le corresponden al estudiante; mientras haya
+ *   sesiones por celebrarse o sin asistencia registrada, el requisito queda pendiente.
+ */
+export async function evaluateCompletion(userId: number, courseId: number): Promise<CompletionStatus | null> {
+  const enr = await prisma.enrollment.findUnique({ where: { userId_courseId: { userId, courseId } }, include: { course: true } });
+  if (!enr) return null;
+  const course = enr.course;
+
+  // Lecciones
+  const lessonWhere = { isPublished: true, module: { courseId, isPublished: true } };
+  const [total, completed] = await Promise.all([
+    prisma.lesson.count({ where: lessonWhere }),
+    prisma.lessonProgress.count({ where: { userId, status: 'COMPLETED', lesson: lessonWhere } }),
+  ]);
+
+  // Evaluaciones
+  const assessments = await prisma.assessment.findMany({
+    where: { courseId, isPublished: true },
+    select: { id: true, title: true, type: true, weight: true, passingScore: true },
+    orderBy: { id: 'asc' },
+  });
+  const attempts = assessments.length
+    ? await prisma.assessmentAttempt.findMany({
+        where: { userId, assessmentId: { in: assessments.map((a) => a.id) }, status: { not: 'IN_PROGRESS' } },
+        select: { assessmentId: true, percentage: true, passed: true },
+      })
+    : [];
+  const best = new Map<number, { pct: number; passed: boolean; count: number }>();
+  for (const a of attempts) {
+    const cur = best.get(a.assessmentId) ?? { pct: 0, passed: false, count: 0 };
+    best.set(a.assessmentId, { pct: Math.max(cur.pct, Number(a.percentage ?? 0)), passed: cur.passed || a.passed === true, count: cur.count + 1 });
+  }
+  const finalsRaw = assessments.filter((a) => a.type === 'FINAL');
+  const finals = finalsRaw.map((a) => {
+    const b = best.get(a.id);
+    return { id: a.id, title: a.title, passingScore: a.passingScore, attempts: b?.count ?? 0, bestPercentage: b ? b.pct : null, met: !!b?.passed };
+  });
+
+  const lessonsMet = (total > 0 && completed >= total) || (!course.requireAllLessons && finals.length > 0);
+
+  // Nota final del curso
+  const weighted = assessments.filter((a) => a.weight > 0);
+  let value: number | null = null;
+  let enforced = false;
+  if (weighted.length) {
+    const w = weighted.reduce((sum, a) => sum + a.weight, 0);
+    value = weighted.reduce((sum, a) => sum + (best.get(a.id)?.pct ?? 0) * a.weight, 0) / w;
+    enforced = true;
+  } else if (finalsRaw.length) {
+    value = avg(finalsRaw.map((a) => best.get(a.id)?.pct ?? 0));
+    enforced = true;
+  } else {
+    value = avg([...best.values()].map((b) => b.pct)); // solo informativa: el curso no tiene componentes calificados
+  }
+  if (value != null) value = round2(value);
+  const gradeMet = !enforced || (value != null && value >= course.passingScore);
+
+  // Asistencia
+  const now = new Date();
+  const events =
+    course.minAttendancePct > 0
+      ? await prisma.event.findMany({
+          where: { courseId, type: { not: 'DEADLINE' }, endAt: { gte: enr.enrolledAt } },
+          select: {
+            startAt: true,
+            groupId: true,
+            participants: { select: { userId: true } },
+            attendance: { where: { userId }, select: { status: true } },
+          },
+        })
+      : [];
+  const mine = events.filter((e) => {
+    if (e.attendance.length) return true; // el personal registró su asistencia: le corresponde
+    if (e.participants.length) return e.participants.some((p) => p.userId === userId); // evento dirigido a personas concretas
+    return e.groupId == null || e.groupId === enr.groupId;
+  });
+  const upcoming = mine.filter((e) => e.startAt >= now && !e.attendance.length).length;
+  const past = mine.filter((e) => e.startAt < now || e.attendance.length > 0);
+  const pendingRecord = past.filter((e) => !e.attendance.length).length;
+  const recorded = past.filter((e) => e.attendance.length > 0 && e.attendance[0]!.status !== 'EXCUSED');
+  const attended = recorded.filter((e) => e.attendance[0]!.status === 'PRESENT' || e.attendance[0]!.status === 'LATE').length;
+  const pct = recorded.length ? Math.round((attended / recorded.length) * 100) : null;
+  const attendanceMet =
+    course.minAttendancePct <= 0 ||
+    mine.length === 0 ||
+    (upcoming === 0 && pendingRecord === 0 && (pct == null || pct >= course.minAttendancePct));
+
+  const finalsMet = finals.every((f) => f.met);
+  return {
+    lessons: { completed, total, met: lessonsMet },
+    finals,
+    grade: { value, required: course.passingScore, enforced, met: gradeMet },
+    attendance: { required: course.minAttendancePct, attended, recorded: recorded.length, pendingRecord, upcoming, pct, met: attendanceMet },
+    eligible: lessonsMet && finalsMet && gradeMet && attendanceMet,
+  };
+}
 
 /** Recalcula progreso del curso y lo cierra (COMPLETED + certificado) si se cumplen todos los criterios. */
 export async function recalcEnrollment(userId: number, courseId: number): Promise<{ progressPct: number; courseCompleted: boolean }> {
@@ -227,50 +357,10 @@ export async function recalcEnrollment(userId: number, courseId: number): Promis
   if (enr.status !== 'ACTIVE') return { progressPct, courseCompleted: enr.status === 'COMPLETED' };
 
   const course = enr.course;
-  const assessments = await prisma.assessment.findMany({ where: { courseId, isPublished: true }, select: { id: true, type: true, weight: true } });
-  const attempts = assessments.length
-    ? await prisma.assessmentAttempt.findMany({
-        where: { userId, assessmentId: { in: assessments.map((a) => a.id) }, status: { not: 'IN_PROGRESS' } },
-        select: { assessmentId: true, percentage: true, passed: true },
-      })
-    : [];
-  const best = new Map<number, { pct: number; passed: boolean }>();
-  for (const a of attempts) {
-    const cur = best.get(a.assessmentId) ?? { pct: 0, passed: false };
-    best.set(a.assessmentId, { pct: Math.max(cur.pct, Number(a.percentage ?? 0)), passed: cur.passed || a.passed === true });
-  }
-
-  const finals = assessments.filter((a) => a.type === 'FINAL');
-  const finalsOk = finals.every((a) => best.get(a.id)?.passed);
+  const status = await evaluateCompletion(userId, courseId);
+  if (!status || !status.eligible) return { progressPct, courseCompleted: false };
   const lessonsOk = total > 0 && progressPct === 100;
-  const lessonsRule = lessonsOk || (!course.requireAllLessons && finals.length > 0);
-  if (!lessonsRule || !finalsOk) return { progressPct, courseCompleted: false };
-
-  // asistencia
-  if (course.minAttendancePct > 0) {
-    const events = await prisma.event.findMany({
-      where: {
-        courseId,
-        startAt: { lt: new Date() },
-        OR: [{ participants: { some: { userId } } }, { attendance: { some: { userId } } }, ...(enr.groupId ? [{ groupId: enr.groupId }] : [])],
-      },
-      select: { id: true, attendance: { where: { userId }, select: { status: true } } },
-    });
-    const counted = events.filter((e) => e.attendance[0]?.status !== 'EXCUSED');
-    if (counted.length) {
-      const present = counted.filter((e) => e.attendance[0]?.status === 'PRESENT' || e.attendance[0]?.status === 'LATE').length;
-      if ((present / counted.length) * 100 < course.minAttendancePct) return { progressPct, courseCompleted: false };
-    }
-  }
-
-  // nota final
-  const weighted = assessments.filter((a) => a.weight > 0 && best.has(a.id));
-  let finalGrade: number | null = null;
-  if (weighted.length) {
-    const w = weighted.reduce((s, a) => s + a.weight, 0);
-    finalGrade = weighted.reduce((s, a) => s + best.get(a.id)!.pct * a.weight, 0) / w;
-  } else finalGrade = avg([...best.values()].map((b) => b.pct));
-  if (finalGrade != null) finalGrade = Math.round(finalGrade * 100) / 100;
+  const finalGrade = status.grade.value;
 
   const upd = await prisma.enrollment.updateMany({
     where: { id: enr.id, status: 'ACTIVE' },

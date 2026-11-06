@@ -128,7 +128,7 @@ export function PublicLayout() {
           <div className="lg:col-span-3">
             <p className="text-xs font-semibold uppercase tracking-[0.08em] text-paper/85">Contacto</p>
             <ul className="mt-4 space-y-2.5 text-sm">
-              <li><a href={`mailto:${brand.contactEmail}`} className="inline-flex items-center gap-2 text-paper no-underline hover:underline"><Mail className="size-4" />{brand.contactEmail}</a></li>
+              {brand.contactEmail && <li><a href={`mailto:${brand.contactEmail}`} className="inline-flex items-center gap-2 text-paper no-underline hover:underline"><Mail className="size-4" />{brand.contactEmail}</a></li>}
               <li><a href={`tel:${brand.contactPhone.replace(/[^+\d]/g, '')}`} className="inline-flex items-center gap-2 text-paper no-underline hover:underline"><Phone className="size-4" />{brand.contactPhone}</a></li>
               {brand.whatsapp && <li><a href={`https://wa.me/${brand.whatsapp}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-paper no-underline hover:underline"><MessageCircle className="size-4" />WhatsApp</a></li>}
               {brand.instagram && <li><a href={`https://instagram.com/${brand.instagram}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-paper no-underline hover:underline"><Instagram className="size-4" />@{brand.instagram}</a></li>}

@@ -80,7 +80,7 @@ export default function Contact() {
         <aside className="lg:col-span-5">
           <h2 className="border-b border-ink pb-3 text-xl font-bold">Otras vías</h2>
           <ul className="divide-y divide-line">
-            <li><a href={`mailto:${brand.contactEmail}`} className="flex items-center gap-3 py-4 font-semibold text-ink no-underline hover:underline"><Mail className="size-5" aria-hidden />{brand.contactEmail}</a></li>
+            {brand.contactEmail && <li><a href={`mailto:${brand.contactEmail}`} className="flex items-center gap-3 py-4 font-semibold text-ink no-underline hover:underline"><Mail className="size-5" aria-hidden />{brand.contactEmail}</a></li>}
             <li><a href={`tel:${brand.contactPhone.replace(/[^+\d]/g, '')}`} className="flex items-center gap-3 py-4 font-semibold text-ink no-underline hover:underline"><Phone className="size-5" aria-hidden />{brand.contactPhone}</a></li>
             {brand.whatsapp && <li><a href={`https://wa.me/${brand.whatsapp}`} target="_blank" rel="noreferrer" className="flex items-center gap-3 py-4 font-semibold text-ink no-underline hover:underline"><MessageCircle className="size-5" aria-hidden />WhatsApp</a></li>}
             {brand.instagram && <li><a href={`https://instagram.com/${brand.instagram}`} target="_blank" rel="noreferrer" className="flex items-center gap-3 py-4 font-semibold text-ink no-underline hover:underline"><Instagram className="size-5" aria-hidden />@{brand.instagram}</a></li>}

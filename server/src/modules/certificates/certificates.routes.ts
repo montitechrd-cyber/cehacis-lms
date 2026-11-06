@@ -18,6 +18,7 @@ import {
   renderCertificatePdf,
   type CertificateForPdf,
 } from './certificates.service.js';
+import { evaluateCompletion } from '../classroom/classroom.service.js';
 
 export { issueCertificateIfEligible, renderCertificatePdf } from './certificates.service.js';
 
@@ -75,7 +76,7 @@ r.get('/requirements/:courseId', requireAuth, async (req, res) => {
   if (!course) throw notFound('Curso no encontrado');
   const finals = await prisma.assessment.findMany({
     where: { courseId, type: 'FINAL', isPublished: true },
-    select: { id: true, title: true },
+    select: { id: true, title: true, passingScore: true },
     orderBy: { id: 'asc' },
   });
   const base = {
@@ -93,34 +94,12 @@ r.get('/requirements/:courseId', requireAuth, async (req, res) => {
     return;
   }
 
-  const lessonWhere = { isPublished: true, module: { courseId, isPublished: true } };
-  const [total, completed] = await Promise.all([
-    prisma.lesson.count({ where: lessonWhere }),
-    prisma.lessonProgress.count({ where: { userId, status: 'COMPLETED', lesson: lessonWhere } }),
-  ]);
-
-  const assessments = await Promise.all(
-    finals.map(async (a) => {
-      const agg = await prisma.assessmentAttempt.aggregate({
-        where: { userId, assessmentId: a.id, status: { in: ['SUBMITTED', 'GRADED'] } },
-        _max: { percentage: true },
-        _count: { _all: true },
-      });
-      const best = agg._max.percentage != null ? Number(agg._max.percentage) : null;
-      return { id: a.id, title: a.title, attempts: agg._count._all, bestPercentage: best, met: best != null && best >= course.passingScore };
-    }),
-  );
-
-  const now = new Date();
-  const [sessions, attended] = await Promise.all([
-    prisma.event.count({ where: { courseId, startAt: { lte: now } } }),
-    prisma.attendance.count({ where: { userId, status: { in: ['PRESENT', 'LATE'] }, event: { courseId } } }),
-  ]);
-  const attPct = sessions ? Math.min(100, Math.round((attended / sessions) * 100)) : null;
-
-  const lessonsMet = !course.requireAllLessons || (total > 0 ? completed >= total : true);
-  const attendanceMet = course.minAttendancePct <= 0 || (attPct != null && attPct >= course.minAttendancePct);
-  const assessmentsMet = assessments.every((a) => a.met);
+  // Misma evaluación que usa el cierre del curso: lo que ve el estudiante es lo que se aplica.
+  const st = await evaluateCompletion(userId, courseId);
+  if (!st) {
+    res.json({ ...base, enrollment: null });
+    return;
+  }
   const cert = await prisma.certificate.findFirst({ where: { userId, courseId, status: 'VALID' }, select: { id: true, code: true } });
 
   res.json({
@@ -129,10 +108,18 @@ r.get('/requirements/:courseId', requireAuth, async (req, res) => {
       status: enr.status,
       progressPct: enr.progressPct,
       finalGrade: enr.finalGrade != null ? Number(enr.finalGrade) : null,
-      lessons: { completed, total, met: lessonsMet },
-      assessments,
-      attendance: { attended, sessions, pct: attPct, met: attendanceMet },
-      eligible: course.certificateEnabled && lessonsMet && attendanceMet && assessmentsMet,
+      lessons: st.lessons,
+      assessments: st.finals,
+      grade: st.grade,
+      attendance: {
+        attended: st.attendance.attended,
+        sessions: st.attendance.recorded,
+        pendingRecord: st.attendance.pendingRecord,
+        upcoming: st.attendance.upcoming,
+        pct: st.attendance.pct,
+        met: st.attendance.met,
+      },
+      eligible: course.certificateEnabled && (enr.status === 'COMPLETED' || st.eligible),
       certificate: cert,
     },
   });

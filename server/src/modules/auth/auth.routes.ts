@@ -144,7 +144,8 @@ r.post('/login', authLimiter, async (req, res) => {
   }
   const ok = await bcrypt.compare(password, user.passwordHash);
   if (!ok) {
-    const failed = user.failedLogins + 1;
+    const lockExpired = user.lockedUntil !== null && user.lockedUntil <= new Date();
+    const failed = (lockExpired ? 0 : user.failedLogins) + 1;
     await prisma.user.update({
       where: { id: user.id },
       data: { failedLogins: failed, lockedUntil: failed >= MAX_FAILED ? new Date(Date.now() + LOCK_MIN * 60000) : null },
@@ -153,11 +154,15 @@ r.post('/login', authLimiter, async (req, res) => {
     throw fail();
   }
   if (user.status === 'SUSPENDED') throw new AppError(403, 'Tu cuenta está suspendida. Contacta a la administración.', 'SUSPENDED');
+  if (user.status !== 'ACTIVE') throw new AppError(403, 'Tu cuenta aún no está activa. Contacta a la administración.', 'INACTIVE');
   await prisma.user.update({ where: { id: user.id }, data: { failedLogins: 0, lockedUntil: null, lastLoginAt: new Date() } });
   await issueSession(req, res, user.id);
   await audit(req, 'auth.login', 'user', user.id);
   res.json({ user: await mePayload(user.id) });
 });
+
+/** Ventana en la que reusar un refresh token recién rotado se trata como carrera entre pestañas, no como robo. */
+const REFRESH_GRACE_MS = 30_000;
 
 /** Rota el refresh token (uso único) y emite un nuevo access token. */
 r.post('/refresh', async (req, res) => {
@@ -165,6 +170,12 @@ r.post('/refresh', async (req, res) => {
   if (!token) throw unauthorized('Sesión expirada');
   const session = await prisma.session.findUnique({ where: { tokenHash: sha256(token) }, include: { user: true } });
   if (!session || session.revokedAt || session.expiresAt < new Date() || session.user.status !== 'ACTIVE' || session.user.deletedAt) {
+    if (session && session.revokedAt && Date.now() - session.revokedAt.getTime() < REFRESH_GRACE_MS && !session.user.deletedAt && session.user.status === 'ACTIVE') {
+      // Carrera entre pestañas: otra petición acaba de rotar este token y el navegador ya tiene las cookies nuevas.
+      // No se emite nada nuevo ni se borran cookies; el cliente reintenta con la sesión vigente.
+      res.json({ ok: true });
+      return;
+    }
     if (session && session.revokedAt) {
       // Reutilización de un token ya rotado: posible robo. Se revocan todas las sesiones del usuario.
       await prisma.session.updateMany({ where: { userId: session.userId, revokedAt: null }, data: { revokedAt: new Date() } });

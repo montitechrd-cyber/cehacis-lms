@@ -62,12 +62,17 @@ async function canRead(req: Request, file: { id: number; ownerId: number | null;
   // 2) Entregas de actividades: autor, miembro del grupo o facilitador del curso
   const subs = await prisma.submissionFile.findMany({
     where: { fileId: file.id },
-    select: { submission: { select: { userId: true, groupId: true, activity: { select: { courseId: true } } } } },
+    select: { submission: { select: { userId: true, groupId: true, activity: { select: { courseId: true, peerReview: true, isPublished: true } } } } },
   });
   for (const { submission: s } of subs) {
     if (s.userId === user.id) return true;
     if (s.groupId && (await prisma.activityGroupMember.findUnique({ where: { groupId_userId: { groupId: s.groupId, userId: user.id } } }))) return true;
     if (await prisma.courseInstructor.findUnique({ where: { courseId_instructorId: { courseId: s.activity.courseId, instructorId: user.id } } })) return true;
+    // Revisión entre pares: los compañeros inscritos en el curso deben poder abrir la entrega que evalúan.
+    if (s.activity.peerReview && s.activity.isPublished) {
+      const enr = await prisma.enrollment.findUnique({ where: { userId_courseId: { userId: user.id, courseId: s.activity.courseId } } });
+      if (enr && (enr.status === 'ACTIVE' || enr.status === 'COMPLETED')) return true;
+    }
   }
 
   // 3) Logo o firma de plantillas de certificado

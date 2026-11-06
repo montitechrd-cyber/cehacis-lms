@@ -157,7 +157,7 @@ export default function Simulation() {
       toast.error(aiErrorMessage(finish.error));
     }
   }, [finish.error]);
-  useEffect(() => endRef.current?.scrollIntoView({ block: 'end', behavior: 'smooth' }), [q.data?.messages.length, pending]);
+  useEffect(() => { endRef.current?.scrollIntoView({ block: 'end', behavior: 'smooth' }); }, [q.data?.messages.length, pending]);
 
   const submit = () => {
     const c = text.trim();

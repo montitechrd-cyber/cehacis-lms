@@ -3,7 +3,7 @@
  * secuencia forzada del aula, flujo comercial sandbox y verificación de certificados).
  * Requieren la base de datos migrada y sembrada: `npm run db:seed`.
  */
-import { beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import request from 'supertest';
 import type { Express } from 'express';
 import { createApp } from '../src/app.js';
@@ -155,5 +155,137 @@ describe('Comercial (entorno sandbox) y certificados', () => {
     const r = await agent.get('/api/ai/status');
     expect(r.status).toBe(200);
     expect(JSON.stringify(r.body)).not.toMatch(/sk-ant/);
+  });
+});
+
+describe('Regresiones de la revisión de plataforma', () => {
+  const cookieVal = (res: { headers: Record<string, unknown> }, name: string) =>
+    new RegExp(`${name}=([^;]+)`).exec(String(res.headers['set-cookie']))?.[1];
+
+  it('responde 413 (no 500) a un JSON demasiado grande', async () => {
+    const { agent, csrf } = await agentFor();
+    const r = await agent.post('/api/auth/login').set('x-csrf-token', csrf).set('content-type', 'application/json').send(JSON.stringify({ email: 'a@b.c', password: 'x'.repeat(3 * 1024 * 1024) }));
+    expect(r.status).toBe(413);
+  });
+
+  it('el webhook de la pasarela no queda bloqueado por CSRF', async () => {
+    const r = await request(app).post('/api/commerce/webhook/azul').send({});
+    expect(r.body?.error?.code).not.toBe('CSRF');
+  });
+
+  it('una carrera de refresh entre pestañas no cierra todas las sesiones', async () => {
+    const { agent, csrf } = await agentFor();
+    const login = await agent.post('/api/auth/login').set('x-csrf-token', csrf).send({ email: 'estudiante@cehacis.test', password: PASS });
+    const oldRt = cookieVal(login, 'cehacis_rt')!;
+    const first = await request(app).post('/api/auth/refresh').set('x-csrf-token', csrf).set('Cookie', `cehacis_csrf=${csrf}; cehacis_rt=${oldRt}`);
+    expect(first.status).toBe(200);
+    const newRt = cookieVal(first, 'cehacis_rt')!;
+    const second = await request(app).post('/api/auth/refresh').set('x-csrf-token', csrf).set('Cookie', `cehacis_csrf=${csrf}; cehacis_rt=${oldRt}`);
+    expect(second.status).toBe(200);
+    const third = await request(app).post('/api/auth/refresh').set('x-csrf-token', csrf).set('Cookie', `cehacis_csrf=${csrf}; cehacis_rt=${newRt}`);
+    expect(third.status).toBe(200);
+  });
+
+  it('reinicia el contador de intentos cuando el bloqueo ya expiró', async () => {
+    const email = 'estudiante@cehacis.test';
+    await prisma.user.update({ where: { email }, data: { failedLogins: 5, lockedUntil: new Date(Date.now() - 60_000) } });
+    const { agent, csrf } = await agentFor();
+    const r = await agent.post('/api/auth/login').set('x-csrf-token', csrf).send({ email, password: 'incorrecta1' });
+    expect(r.status).toBe(401);
+    const u = await prisma.user.findUniqueOrThrow({ where: { email } });
+    expect(u.failedLogins).toBe(1);
+    expect(u.lockedUntil).toBeNull();
+    await prisma.user.update({ where: { email }, data: { failedLogins: 0, lockedUntil: null } });
+  });
+
+  it('la clasificación por curso exige pertenecer al curso', async () => {
+    const student = await prisma.user.findUniqueOrThrow({ where: { email: 'estudiante@cehacis.test' } });
+    const other = await prisma.course.findFirst({ where: { deletedAt: null, enrollments: { none: { userId: student.id } } } });
+    if (!other) return;
+    const { agent } = await agentFor('estudiante@cehacis.test');
+    const r = await agent.get(`/api/gamification/leaderboard?courseId=${other.id}`);
+    expect(r.status).toBe(403);
+  });
+
+  it('edita una escala de valoración sin etiquetas', async () => {
+    const { agent, csrf } = await agentFor('superadmin@cehacis.test');
+    const c = await agent.post('/api/competencies/scales').set('x-csrf-token', csrf).send({ name: `Escala prueba ${Date.now()}`, min: 1, max: 4 });
+    expect(c.status).toBe(201);
+    const p = await agent.patch(`/api/competencies/scales/${c.body.id}`).set('x-csrf-token', csrf).send({ name: 'Escala renombrada' });
+    expect(p.status).toBe(200);
+    await prisma.ratingScale.delete({ where: { id: c.body.id } });
+  });
+});
+
+describe('Reglas de finalización del curso', async () => {
+  const { evaluateCompletion, isLessonCompletable } = await import('../src/modules/classroom/classroom.service.js');
+  let courseId = 0;
+  let userId = 0;
+
+  beforeAll(async () => {
+    userId = (await prisma.user.findUniqueOrThrow({ where: { email: 'estudiante@cehacis.test' } })).id;
+    const tag = Date.now().toString(36);
+    const course = await prisma.course.create({
+      data: { code: `T-${tag}`.slice(0, 20), title: 'Curso de prueba de finalización', slug: `prueba-fin-${tag}`, passingScore: 80, minAttendancePct: 0, requireAllLessons: true },
+    });
+    courseId = course.id;
+    const mod = await prisma.courseModule.create({ data: { courseId, title: 'Módulo' } });
+    await prisma.lesson.create({ data: { moduleId: mod.id, title: 'Lección' } });
+    await prisma.enrollment.create({ data: { userId, courseId, status: 'ACTIVE', enrolledAt: new Date(Date.now() - 7 * 864e5) } });
+  });
+
+  afterAll(async () => {
+    if (courseId) await prisma.course.delete({ where: { id: courseId } });
+  });
+
+  it('cuenta como 0 las evaluaciones ponderadas no presentadas y exige la nota mínima del curso', async () => {
+    const quiz = await prisma.assessment.create({ data: { courseId, title: 'Quiz', type: 'QUIZ', weight: 40, isPublished: true } });
+    const final = await prisma.assessment.create({ data: { courseId, title: 'Final', type: 'FINAL', weight: 60, passingScore: 50, isPublished: true } });
+    await prisma.assessmentAttempt.create({ data: { assessmentId: final.id, userId, status: 'GRADED', percentage: 100, passed: true } });
+    let st = (await evaluateCompletion(userId, courseId))!;
+    expect(st.finals[0]!.met).toBe(true);
+    expect(st.grade.value).toBe(60);
+    expect(st.grade.met).toBe(false);
+    await prisma.assessmentAttempt.create({ data: { assessmentId: quiz.id, userId, status: 'GRADED', percentage: 100, passed: true } });
+    st = (await evaluateCompletion(userId, courseId))!;
+    expect(st.grade.value).toBe(100);
+    expect(st.grade.met).toBe(true);
+  });
+
+  it('deja la asistencia pendiente hasta que se registre y luego la exige', async () => {
+    await prisma.course.update({ where: { id: courseId }, data: { minAttendancePct: 80 } });
+    const ev = await prisma.event.create({
+      data: { title: 'Clase', courseId, startAt: new Date(Date.now() - 2 * 3600e3), endAt: new Date(Date.now() - 3600e3) },
+    });
+    let st = (await evaluateCompletion(userId, courseId))!;
+    expect(st.attendance.pendingRecord).toBe(1);
+    expect(st.attendance.met).toBe(false);
+    await prisma.attendance.create({ data: { eventId: ev.id, userId, status: 'ABSENT' } });
+    st = (await evaluateCompletion(userId, courseId))!;
+    expect(st.attendance.pct).toBe(0);
+    expect(st.attendance.met).toBe(false);
+    await prisma.attendance.update({ where: { eventId_userId: { eventId: ev.id, userId } }, data: { status: 'PRESENT' } });
+    st = (await evaluateCompletion(userId, courseId))!;
+    expect(st.attendance.met).toBe(true);
+  });
+
+  it('una entrega devuelta no cumple la regla de la lección', async () => {
+    const act = await prisma.practicalActivity.create({ data: { courseId, title: 'Práctica', isPublished: true } });
+    const mod = await prisma.courseModule.findFirstOrThrow({ where: { courseId } });
+    const lesson = await prisma.lesson.create({ data: { moduleId: mod.id, title: 'Lección con práctica', completionRule: 'ACTIVITY', requiredActivityId: act.id } });
+    const sub = await prisma.activitySubmission.create({ data: { activityId: act.id, userId, status: 'RETURNED' } });
+    expect((await isLessonCompletable(userId, lesson.id)).ok).toBe(false);
+    await prisma.activitySubmission.update({ where: { id: sub.id }, data: { status: 'SUBMITTED' } });
+    expect((await isLessonCompletable(userId, lesson.id)).ok).toBe(true);
+  });
+
+  it('la pantalla de requisitos muestra la misma evaluación que aplica el cierre', async () => {
+    const { agent } = await agentFor('estudiante@cehacis.test');
+    const r = await agent.get(`/api/certificates/requirements/${courseId}`);
+    expect(r.status).toBe(200);
+    const st = (await evaluateCompletion(userId, courseId))!;
+    expect(r.body.enrollment.grade).toEqual(st.grade);
+    expect(r.body.enrollment.lessons).toEqual(st.lessons);
+    expect(r.body.enrollment.attendance.met).toBe(st.attendance.met);
   });
 });

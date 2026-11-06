@@ -28,6 +28,11 @@ export function errorHandler(err: unknown, _req: Request, res: Response, _next: 
   if (err && typeof err === 'object' && 'type' in err && (err as { type: string }).type === 'entity.parse.failed') {
     return res.status(400).json({ error: { code: 'BAD_REQUEST', message: 'JSON mal formado' } });
   }
+  const httpStatus = err && typeof err === 'object' ? Number((err as { status?: unknown }).status ?? (err as { statusCode?: unknown }).statusCode) : NaN;
+  if (httpStatus >= 400 && httpStatus < 500) {
+    const message = httpStatus === 413 ? 'La solicitud es demasiado grande' : 'Solicitud no válida';
+    return res.status(httpStatus).json({ error: { code: httpStatus === 413 ? 'PAYLOAD_TOO_LARGE' : 'BAD_REQUEST', message } });
+  }
   console.error('[error]', err);
   res.status(500).json({ error: { code: 'INTERNAL', message: 'Ocurrió un error inesperado. Inténtalo de nuevo.' } });
 }
